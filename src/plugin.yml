@@ -1,0 +1,5 @@
+main: com.niciel.superduperitems.SDIPlugin
+name: core
+version: 1.0
+description: A test plugin
+api-version: 1.15
