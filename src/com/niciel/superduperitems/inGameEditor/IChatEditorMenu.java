@@ -11,23 +11,18 @@ public abstract class IChatEditorMenu<T extends Object> extends  IChatEditor<T> 
 
 
     public final UUID uuid;
-    private int deep;
-    private WeakReference<EditorChatObject> owner;
+    private WeakReference<IBaseObjectEditor> owner;
 
 
 
-    public IChatEditorMenu(EditorChatObject owner , int deep ,String name, String description, Class baseType ) {
+    public IChatEditorMenu(IBaseObjectEditor owner ,String name, String description, Class baseType ) {
         super(name ,description ,baseType);
         this.uuid = UUID.randomUUID();
-        this.deep = deep;
         this.owner = new WeakReference<>(owner);
     }
 
-    public  int getDeep() {
-        return deep;
-    }
 
-    public EditorChatObject getTreeRoot() {
+    public IBaseObjectEditor getTreeRoot() {
         return owner.get();
     }
 

@@ -13,6 +13,13 @@ public abstract class IChatEditor<T extends Object> {
     private String description;
     private Class baseType;
 
+
+    /**
+     *
+     * @param name
+     * @param description
+     * @param baseType field type
+     */
     public IChatEditor(String name, String description, Class baseType) {
         this.name = name;
         this.description = description;

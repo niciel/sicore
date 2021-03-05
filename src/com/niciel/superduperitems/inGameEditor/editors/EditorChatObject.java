@@ -6,14 +6,17 @@ import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.inGameEditor.*;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditableMethod;
+import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.utils.*;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
@@ -26,34 +29,90 @@ public class EditorChatObject<T extends Object> extends IChatEditorMenu<T> {
 
     private String description;
     private String name;
-    private List<IChatEditorMenu> menuTree;
+    private List<InheredClasses> menuTree;
     private Ref<T> reference;
+    private boolean selected = false;
+    private ChatEditorManager manager;
 
-    private List<FieldData> fields;
-
-    public EditorChatObject(EditorChatObject owner, int deep, String name, String description, Class baseType) {
-        super(owner, deep, name, description, baseType);
+    public EditorChatObject(IBaseObjectEditor owner,String name, String description, Class baseType) {
+        super(owner, name, description, baseType);
+        this.manager = IManager.getManager(ChatEditorManager.class);
     }
 
+    private void generate(Class clazz) {
+        ChatEditable editable;
+        String name;
+        String description;
+        InheredClasses inh;
+        IChatEditor editor;
+
+        final WeakReference<EditorChatObject> ownerEditor = new WeakReference<>(this);
+        final MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+        if (clazz.isAnnotationPresent(ChatObjectName.class))
+            inh = new InheredClasses( ((ChatObjectName ) clazz.getDeclaredAnnotation(ChatObjectName.class)).name());
+        else
+            inh = new InheredClasses(clazz.getSimpleName());
+        final List<FieldData> data = new ArrayList<>();
+        inh.fields = data;
+        menuTree.add(inh);
+        for (Field f : clazz.getDeclaredFields()) {
+            editable = f.getAnnotation(ChatEditable.class);
+            if (editable == null || editable.excludeInEdit())
+                continue;
+            description = editable.description();
+            if (editable.name().isEmpty())
+                name = f.getName();
+            else
+                name = editable.name();
+            editor = manager.getEditor(getTreeRoot(),clazz);
+            RefCallBack ref = new RefCallBack();
+
+            try {
+                MethodHandle handle = lookup.unreflectSetter(f);
+                ref.addCallBack(c->{
+                    try {
+                        handle.invoke(ownerEditor.get().reference.getValue() , c);
+                        ownerEditor.get().getTreeRoot().sendMenu();
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
+            } catch (IllegalAccessException e ) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onSelect() {
-        for (FieldData d : fields) {
-            d.item.enableEditor(this,d.reference);
+
+        for (InheredClasses inh : menuTree) {
+            for (FieldData d : inh.fields) {
+                d.editor.enableEditor(this , d.reference);
+            }
         }
+        selected = true;
     }
 
     @Override
     public void onDeselect() {
-        for (FieldData d : fields) {
-            d.item.disableEditor(this);
+        for (InheredClasses inh : menuTree) {
+            for (FieldData d : inh.fields) {
+                d.editor.disableEditor(this);
+            }
         }
+        selected = false;
     }
 
 
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<T> ref) {
+        menuTree.clear();
         reference = ref;
+        if (ref.getValue() != null)
+            generate(ref.getValue().getClass());
+        //TODO uwzglednienie polimorfizmu
     }
 
     @Override
@@ -63,18 +122,57 @@ public class EditorChatObject<T extends Object> extends IChatEditorMenu<T> {
 
     @Override
     public void sendItem(Player p) {
+        if (selected) {
+            if (reference.getValue() != null) {
+                TextComponent tc = new TextComponent("********edytor:"+ name +"********");
+                tc.setColor(ChatColor.GRAY);
+                p.spigot().sendMessage(tc);
+                for (InheredClasses inh : menuTree) {
+                    tc = new TextComponent("****typ: " + inh.nameOfClass+ "****");
+                    tc.setColor(ChatColor.GRAY);
+                    p.spigot().sendMessage(tc);
 
+                    for (FieldData d : inh.fields) {
+                        d.editor.sendItem(p);
+                    }
+                }
+            }
+            else {
+                //TODO send wybor klas od stworzenia
+            }
+        }
+        else {
+            //TODO wyswietla menu do wybrania edycji
+        }
 
 
     }
 
+    private class InheredClasses {
+
+        protected  InheredClasses(String nameof) {
+            this.nameOfClass = nameof;
+        }
+
+        public String nameOfClass;
+        public List<FieldData> fields;
+    }
 
     private class FieldData {
+
+        public FieldData(Class type, String name, String description, Ref reference, IChatEditor item) {
+            this.type = type;
+            this.name = name;
+            this.description = description;
+            this.reference = reference;
+            this.editor = item;
+        }
+
         public Class type;
         public String name;
         public String description;
         public Ref reference;
-        public IChatEditor item;
+        public IChatEditor editor;
     }
 
 

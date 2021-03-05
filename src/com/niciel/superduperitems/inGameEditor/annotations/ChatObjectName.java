@@ -15,4 +15,8 @@ public @interface ChatObjectName {
      * @return  visible name of type object above fields if not added Simple name of class
      */
     String name();
+
+
+
+
 }

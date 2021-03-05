@@ -27,46 +27,6 @@ import java.util.function.Supplier;
 
 public class ChatCommandEditor<T>   {
 
-    private static HashMap<String , Dual<Class , Supplier<IChatEditor>>> classNameToEditor = new HashMap<>();
-    private static ArrayList<Dual<Predicate<Class> , Supplier<IChatEditor>>> suppilerss = new ArrayList<>();
-
-    public static IChatEditor getEditor(Class clazz) {
-        Dual<Class , Supplier<IChatEditor>> dual = classNameToEditor.get(clazz.getName());
-        if (dual != null) {
-            return dual.second.get();
-        }
-        for (Dual<Predicate<Class> , Supplier<IChatEditor>> d : suppilerss) {
-            if (d.first.test(clazz))
-                return d.second.get();
-        }
-
-        if (clazz.isEnum())
-            return new EnumEditor(clazz);
-        return new EditorChatObject();
-    }
-
-    static {
-        addSupplier(String.class , EditorChatString::new);
-        addSupplier(int.class , EditorChatInt::new);
-        addSupplier(Integer.class , EditorChatInt::new);
-        addSupplier(List.class , EditorChatList::new);
-        addSupplier(ArrayList.class , EditorChatList::new);
-        addSupplier(p -> ItemStack.class.isAssignableFrom(p) , EditorChatItemStack::new);
-        addSupplier(Double.class , EditorChatDouble::new);
-        addSupplier(double.class , EditorChatDouble::new);
-        addSupplier(Float.class , EditorChatFloat::new);
-        addSupplier(float.class , EditorChatFloat::new);
-        addSupplier(Vector.class , EditorChatVector::new);
-        addSupplier(ArmorStandModel.class , ArmorStandModelEditor::new);
-    }
-
-    public static <T> void  addSupplier(Class<T> clazz , Supplier<IChatEditor> sup) {
-        classNameToEditor.put(clazz.getName()  , new Dual(clazz , sup));
-    }
-
-    public static <T> void  addSupplier(Predicate<Class> predict , Supplier<IChatEditor> sup) {
-        suppilerss.add(new Dual<>(predict , sup));
-    }
 
     private  GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
