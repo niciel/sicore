@@ -37,6 +37,10 @@ public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
         return id;
     }
 
+    public void clear(){
+        commands.clear();
+        tabCompiter.clear();
+    }
 
     public void remove(String id) {
         commands.remove(id);

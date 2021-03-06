@@ -5,6 +5,7 @@ import com.niciel.superduperitems.commandGui.CommandPointer;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.IChatEditor;
+import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
 import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -16,7 +17,37 @@ import java.lang.ref.WeakReference;
 public class EditorChatDouble extends IChatEditor<Double> {
 
 
-    private static GuiCommandManager command = SDIPlugin.instance.getManager(GuiCommandManager.class);
+    private Ref<Double> ref;
+    private String name;
+
+    private String command;
+
+    @Override
+    public void enableEditor(IChatEditorMenu owner, Ref<Double> ref) {
+
+    }
+
+    @Override
+    public void disableEditor(IChatEditorMenu owner) {
+
+    }
+
+    @Override
+    public void sendItem(Player p) {
+        TextComponent tc = new TextComponent("[double] " + name + " ");
+        TextComponent in = new TextComponent("[edytuj]");
+        tc.setColor(ChatColor.GRAY);
+
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer.getCommand()+" "));
+        in.setColor(ChatColor.GREEN);
+        tc.addExtra(in);
+        tc.addExtra(" wartosc: " + ref.getValue());
+        p.spigot().sendMessage(tc);
+    }
+
+
+    /*
+        private static GuiCommandManager command = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
     private CommandPointer pointer;
 
@@ -36,6 +67,7 @@ public class EditorChatDouble extends IChatEditor<Double> {
             ref.setValue(0d);
         }
 
+
         pointer = command.registerGuiCommand( (p,s) ->
                 {
                     double i = 0;
@@ -54,17 +86,5 @@ public class EditorChatDouble extends IChatEditor<Double> {
                 }
                 , this.getClass() , SDIPlugin.instance);
     }
-
-    @Override
-    public void sendItem(Player p) {
-        TextComponent tc = new TextComponent("[double] " + name + " ");
-        TextComponent in = new TextComponent("[edytuj]");
-        tc.setColor(ChatColor.GRAY);
-
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer.getCommand()+" "));
-        in.setColor(ChatColor.GREEN);
-        tc.addExtra(in);
-        tc.addExtra(" wartosc: " + ref.getValue());
-        p.spigot().sendMessage(tc);
-    }
+     */
 }

@@ -6,6 +6,7 @@ import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
 import com.niciel.superduperitems.utils.Dual;
 import com.niciel.superduperitems.utils.IManager;
+import com.sun.org.apache.xpath.internal.res.XPATHErrorResources_zh_TW;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,10 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -27,6 +25,7 @@ public class ChatEditorManager implements IManager , Listener {
     private  ArrayList<Dual<Predicate<Class>, IChatEditorSuppiler>> suppilerss = new ArrayList<>();
     private HashMap<UUID , EditorData> editors = new HashMap<>();
 
+    private HashMap<String,Set<String>> classParents = new HashMap<>();
 
     public ChatEditorManager() {
         init();
@@ -109,6 +108,47 @@ public class ChatEditorManager implements IManager , Listener {
 
     }
 
+    /**
+     * register class for editor polimorfizm mechanism , if the class was not mention in register, it will be not displayd in new class constructor of inhered base class
+     * @param clazz
+     */
+    public void register(Class clazz) {
+        Class c = clazz;
+        String base = clazz.getName();
+
+        while (c.getName().contentEquals(Object.class.getName()) == false) {
+            registerIfNotExists(base , c.getName());
+            registerIfNotExists(base , c.getInterfaces());
+            c = c.getSuperclass();
+        }
+    }
+
+    private void registerIfNotExists(String base , Class in[]) {
+        for (Class clazz : in) {
+            registerIfNotExists(base , clazz.getName());
+        }
+    }
+
+
+        private void registerIfNotExists(String base , String in) {
+        Set<String> set = classParents.get(in);
+        if (set == null) {
+            set = new HashSet<>();
+            set.add(base);
+            classParents.put(in , set);
+        }
+        else {
+            if (set.contains(base) == false )
+                set.add(base);
+        }
+    }
+
+    public Set<String> getAllSubClasses(Class clazz) {
+        String n = clazz.getName();
+        if (! classParents.containsKey(n))
+            register(clazz);
+        return classParents.get(n);
+    }
 
     public <T> void  addSupplier(Class<T> clazz , IChatEditorSuppiler sup) {
         classNameToEditor.put(clazz.getName()  , new Dual(clazz , sup));
@@ -146,4 +186,8 @@ public class ChatEditorManager implements IManager , Listener {
         /* copy paste end*/
         return new EditorChatObject(editor , name,description , clazz);
     }
+
+
+
+
 }
