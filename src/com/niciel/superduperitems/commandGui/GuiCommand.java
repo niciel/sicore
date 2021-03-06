@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public abstract class GuiCommand implements GuiCommandArgs {
 
-    abstract void execute(Player p, String left);
+    public abstract void execute(Player p, String left);
 
     @Override
     public void onCommand(Player p, String[] args, int deep) {

@@ -1,9 +1,5 @@
 package com.niciel.superduperitems.inGameEditor;
 
-import com.niciel.superduperitems.commandGui.MultiGuiCommand;
-import com.niciel.superduperitems.inGameEditor.editors.EditorChatObject;
-import org.bukkit.entity.Player;
-
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 

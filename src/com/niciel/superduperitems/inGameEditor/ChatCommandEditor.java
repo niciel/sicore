@@ -1,24 +1,17 @@
 package com.niciel.superduperitems.inGameEditor;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.*;
-import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
-import com.niciel.superduperitems.fakeArmorstands.ArmorStandModelEditor;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import com.niciel.superduperitems.inGameEditor.editors.*;
 import com.niciel.superduperitems.utils.*;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 
 /**
@@ -40,7 +33,7 @@ public class ChatCommandEditor<T>   {
 
     private List<EditorData> list ;
 
-    private MultiGuiCommand commands;
+    private GuiMultiCommand commands;
     private CommandPointer pointerToCommands;
 
     private HashMap<String , String> addedCommands;
@@ -59,7 +52,7 @@ public class ChatCommandEditor<T>   {
         this.mainObject = value;
         this.player = new WeakReference<>(player);
 
-        this.commands = new MultiGuiCommand();
+        this.commands = new GuiMultiCommand();
         this.pointerToCommands = manager.registerGuiCommand(this.commands , this.getClass() , SDIPlugin.instance);
         this.selectedList = new ArrayList<>();
         this.addedCommands = new HashMap<>();

@@ -13,17 +13,16 @@ public class CommandPointer {
 
     private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
-    public final GuiCommandArgs guiCommand;
+    private GuiCommandArgs guiCommand;
     public IGuiTabCompliter compliter;
     public final String stringID;
     public final long createTime;
 
 
 
-    protected CommandPointer(String command , GuiCommandArgs args) {
+    protected CommandPointer(String command ) {
         createTime = System.currentTimeMillis();
         stringID = command;
-        this.guiCommand = args;
     }
 
     public void onCommand(Player sender ,String[] args , int deep) {
@@ -37,6 +36,16 @@ public class CommandPointer {
 
     public String getCommand() {
         return "/" + GuiCommandManager.getCommand() + " " + stringID;
+    }
+
+    public GuiCommandArgs getGuiCommand() {
+        return this.guiCommand;
+    }
+
+    public void setGuiCommand(GuiCommandArgs a) {
+        this.guiCommand = a;
+        if (a != null || a.getClass().isAssignableFrom(IGuiCommandObject.class))
+            ((IGuiCommandObject) a).init(getCommand());
     }
 
     @Override

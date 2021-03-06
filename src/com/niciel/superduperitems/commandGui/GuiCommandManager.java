@@ -125,11 +125,16 @@ public class GuiCommandManager implements IManager , CommandExecutor , Listener 
         return false;
     }
 
+
+    public CommandPointer registerCommandPointer() {
+        return registerCommandPointer(null);
+    }
+
     public CommandPointer registerCommandPointer(GuiCommandArgs args) {
         String ids  = SpigotCharTableUtils.getNextRandomID(usedIDS);
-
-        CommandPointer c = new CommandPointer(ids,args);
+        CommandPointer c = new CommandPointer(ids);
         stringIDtoPointer.put(ids , new WeakReference<>(c));
+        c.setGuiCommand(args);
         return c;
     }
 

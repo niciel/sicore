@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
+public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGuiCommandObject {
 
     private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
     private HashMap<String , GuiCommandArgs> commands = new HashMap<>();
@@ -22,11 +22,11 @@ public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
     public IGuiTabCompliter defaultTabCompliterr;
     private HashSet<String> used = new HashSet<String>();
 
+    private String command;
 
     /**
      * @param args
      * @return  only id of sub command NOT a FULL COMMAND
-     *          this class dos not watch of command tree
      */
     public String register(GuiCommandArgs args) {
         String id = SpigotCharTableUtils.getNextRandomID(used);
@@ -34,6 +34,8 @@ public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
         commands.put(id , args);
         if (args instanceof IGuiTabCompliter)
             tabCompiter.put(id , (IGuiTabCompliter) args);
+        if (args instanceof IGuiCommandObject)
+            ((IGuiCommandObject) args).init(command + " " + id);
         return id;
     }
 
@@ -41,6 +43,8 @@ public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
         commands.clear();
         tabCompiter.clear();
     }
+
+
 
     public void remove(String id) {
         commands.remove(id);
@@ -73,5 +77,10 @@ public class MultiGuiCommand implements GuiCommandArgs , IGuiTabCompliter {
         if (defaultTabCompliterr != null)
             return defaultTabCompliterr.onTabComplite(sender, args ,deep);
         return null;
+    }
+
+    @Override
+    public void init(String command) {
+        this.command = command;
     }
 }

@@ -2,6 +2,7 @@ package com.niciel.superduperitems.inGameEditor.editors;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.CommandPointer;
+import com.niciel.superduperitems.commandGui.GuiCommand;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.IChatEditor;
@@ -18,27 +19,52 @@ public class EditorChatDouble extends IChatEditor<Double> {
 
 
     private Ref<Double> ref;
-    private String name;
 
     private String command;
 
+    /**
+     * @param name
+     * @param description
+     * @param baseType    field type
+     */
+    public EditorChatDouble(String name, String description, Class baseType) {
+        super(name, description, baseType);
+    }
+
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<Double> ref) {
+        command = owner.getTreeRoot().commands().register(new GuiCommand() {
+            @Override
+            public void execute(Player p, String s) {
+                double i = 0;
+                try {
+                    i = Double.parseDouble(s);
+                }
+                catch (NumberFormatException e) {
+                    p.sendMessage("niepoprawna wartosc liczbowa: " + s);
+                    owner.getTreeRoot().sendMenu();
+                    return;
+                }
 
+                if (ref.getValue() != i) {
+                    ref.setValue(i);
+                }
+            }
+        });
     }
 
     @Override
     public void disableEditor(IChatEditorMenu owner) {
-
+        ref = null;
     }
 
     @Override
     public void sendItem(Player p) {
-        TextComponent tc = new TextComponent("[double] " + name + " ");
+        TextComponent tc = new TextComponent("[double] " + getName() + " ");
         TextComponent in = new TextComponent("[edytuj]");
         tc.setColor(ChatColor.GRAY);
 
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer.getCommand()+" "));
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,command +" "));
         in.setColor(ChatColor.GREEN);
         tc.addExtra(in);
         tc.addExtra(" wartosc: " + ref.getValue());
