@@ -5,25 +5,25 @@ import org.bukkit.entity.Player;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 public abstract class IChatEditor<T extends Object> {
 
 
     private String name;
     private String description;
-    private Class baseType;
 
 
     /**
      *
      * @param name
      * @param description
-     * @param baseType field type
+     * @param clazz class of object or if field ist null field type
+     * @param field can be null, when editor is created for object
      */
-    public IChatEditor(String name, String description, Class baseType) {
+    public IChatEditor(String name, String description, Class clazz , Field field) {
         this.name = name;
         this.description = description;
-        this.baseType = baseType;
     }
 
     public abstract void enableEditor(IChatEditorMenu owner , Ref<T> ref);
@@ -39,7 +39,4 @@ public abstract class IChatEditor<T extends Object> {
         return description;
     }
 
-    public Class getBaseType() {
-        return baseType;
-    }
 }

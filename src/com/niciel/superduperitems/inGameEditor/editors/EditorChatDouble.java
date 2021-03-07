@@ -14,6 +14,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 public class EditorChatDouble extends IChatEditor<Double> {
 
@@ -22,13 +23,9 @@ public class EditorChatDouble extends IChatEditor<Double> {
 
     private String command;
 
-    /**
-     * @param name
-     * @param description
-     * @param baseType    field type
-     */
-    public EditorChatDouble(String name, String description, Class baseType) {
-        super(name, description, baseType);
+
+    public EditorChatDouble(String name, String description , Class clazz, Field field) {
+        super(name, description, clazz,field);
     }
 
     @Override

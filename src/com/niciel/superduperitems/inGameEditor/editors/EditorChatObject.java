@@ -34,8 +34,8 @@ public class EditorChatObject<T extends Object> extends IChatEditorMenu<T> {
     private boolean selected = false;
     private ChatEditorManager manager;
 
-    public EditorChatObject(IBaseObjectEditor owner,String name, String description, Class baseType) {
-        super(owner, name, description, baseType);
+    public EditorChatObject(IBaseObjectEditor owner,String name, String description, Class baseType , Field field) {
+        super(owner, name, description, baseType , field);
         this.manager = IManager.getManager(ChatEditorManager.class);
     }
 

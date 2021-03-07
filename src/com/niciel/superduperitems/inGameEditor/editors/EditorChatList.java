@@ -22,8 +22,53 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditorChatList extends IChatEditorMenu<List> implements IFieldEditor {
+public class EditorChatList extends IChatEditorMenu<List>   {
 
+    private Class genericType;
+
+    private boolean selected;
+    private Ref<List> reference;
+
+    public EditorChatList(IBaseObjectEditor owner, String name, String description,  Class clazz , Field field) {
+        super(owner, name, description, clazz,field);
+        Type t = field.getGenericType();
+        if (t instanceof ParameterizedType) {
+            this.genericType = (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
+        }
+        else
+        {
+            SDIPlugin.instance.logWarning(this, "brak typu generycznego dla klasy: " + clazz.getName() + " field " +field.getName());
+            this.genericType = Object.class;
+        }
+        
+    }
+
+    @Override
+    public void onSelect() {
+
+    }
+
+    @Override
+    public void onDeselect() {
+
+    }
+
+    @Override
+    public void enableEditor(IChatEditorMenu owner, Ref<List> ref) {
+        reference = ref;
+    }
+
+    @Override
+    public void disableEditor(IChatEditorMenu owner) {
+        reference = null;
+    }
+
+    @Override
+    public void sendItem(Player p) {
+
+    }
+
+   /*
     private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
     private WeakReference<IChatEditorMenu> owner;
@@ -234,4 +279,5 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
             this.genericType = (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
         }
     }
+    */
 }

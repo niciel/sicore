@@ -1,6 +1,7 @@
 package com.niciel.superduperitems.inGameEditor;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 public abstract class IChatEditorMenu<T extends Object> extends  IChatEditor<T> {
@@ -11,8 +12,8 @@ public abstract class IChatEditorMenu<T extends Object> extends  IChatEditor<T> 
 
 
 
-    public IChatEditorMenu(IBaseObjectEditor owner ,String name, String description, Class baseType ) {
-        super(name ,description ,baseType);
+    public IChatEditorMenu(IBaseObjectEditor owner ,String name, String description, Class clazz , Field field ) {
+        super(name ,description ,clazz,field);
         this.uuid = UUID.randomUUID();
         this.owner = new WeakReference<>(owner);
     }
