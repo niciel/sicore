@@ -1,4 +1,4 @@
-package com.niciel.superduperitems;
+package com.niciel.superduperitems.gsonadapter;
 
 import com.google.gson.*;
 import com.niciel.superduperitems.customitems.ItemComponent;

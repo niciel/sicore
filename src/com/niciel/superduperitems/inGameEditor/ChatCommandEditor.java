@@ -1,252 +1,198 @@
 package com.niciel.superduperitems.inGameEditor;
-import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.*;
-import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import com.niciel.superduperitems.utils.*;
+import com.niciel.superduperitems.commandGui.CommandPointer;
+import com.niciel.superduperitems.commandGui.GuiCommandManager;
+import com.niciel.superduperitems.commandGui.GuiMultiCommand;
+import com.niciel.superduperitems.commandGui.SimpleButtonGui;
+import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.entity.Player;
 
-import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.util.*;
-
-
-/**
- * SPRAWDZIC NAPARAWIC I ZAMIENIC Z CHATCOMMANDEDITOR !!!TODO
- */
-
-public class ChatCommandEditor<T>   {
-
-
-    private  GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
+import java.util.Stack;
+import java.util.function.BiConsumer;
 
 
 
-    public Class type;
-    public T mainObject;
-    public String editorPrefix;
+
+public class ChatCommandEditor<T> extends IChatEditorMenu implements IBaseObjectEditor {
+
+    private final GuiCommandManager guimanager;
+    private final ChatEditorManager editorManager;
+    private boolean disabled = false;
+
+    private final Player p;
+    private final T toEdit;
+    private final Ref<T> refToEdit;
+    private final CommandPointer playerPointer;
+    /**
+     * komendy wykorzystywane przez edytory, co zmiane edytora komendy sa czyszczone
+     */
+    private final GuiMultiCommand multicommand;
+    private final CommandPointer editorCpointer;
+    private final GuiMultiCommand editorCommands;
+    private Stack<IChatEditorMenu> stack;
+    private IChatEditorMenu mainMenu;
 
 
-
-    private List<EditorData> list ;
-
-    private GuiMultiCommand commands;
-    private CommandPointer pointerToCommands;
-
-    private HashMap<String , String> addedCommands;
-    private WeakReference<Player> player;
-
-    public boolean editMode;
-    private List<EditorData> data;
-
-    private HashMap<String , HashSet<String>> excluded;
-    private String backToEditorCommand;
-    private List<IChatEditorMenu> selectedList;
-    private IChatEditor selectedEditor;
+    private BiConsumer<EditorResult , IBaseObjectEditor> exitCode;
 
 
-    public ChatCommandEditor(Player player , T value) {
-        this.mainObject = value;
-        this.player = new WeakReference<>(player);
-
-        this.commands = new GuiMultiCommand();
-        this.pointerToCommands = manager.registerGuiCommand(this.commands , this.getClass() , SDIPlugin.instance);
-        this.selectedList = new ArrayList<>();
-        this.addedCommands = new HashMap<>();
-    }
-
-    public boolean select(IChatEditorMenu ed) {
-        if (getSelectedMenu() == null) {
-            if (this.selectedEditor instanceof IChatEditorMenu)
-                ((IChatEditorMenu) this.selectedEditor).onDeselect(this);
-            selectedList.add(ed);
-            send();
-            return true;
-        }
+    public ChatCommandEditor(Player p, T toEdit) {
+        super(null,null,null,null);
+        this.p = p;
+        this.toEdit = toEdit;
+        this.refToEdit = new Ref<>(toEdit);
+        this.stack = new Stack<>();
+        this.editorManager = IManager.getManager(ChatEditorManager.class);
+        this.guimanager = IManager.getManager(GuiCommandManager.class);
+        this.multicommand = new GuiMultiCommand();
+        this.editorCommands = new GuiMultiCommand();
+        this.playerPointer = guimanager.registerCommandPointer(this.multicommand);
+        this.editorCpointer = guimanager.registerCommandPointer(this.editorCommands);
+        IChatEditor t = editorManager.getEditor(this ,toEdit.getClass());
+        if (t instanceof IChatEditorMenu)
+            mainMenu = (IChatEditorMenu) t;
         else {
-            if (getSelectedMenu().uuid.equals(ed.uuid)) {
-                send();
-                return true;
-            }
-            else {
-                getSelectedMenu().onDeselect(this);
-                selectedList.add(ed);
-                getSelectedMenu().onSelect(this);
-                send();
-                return true;
-            }
+            disabled = true;
         }
     }
 
-
-    public IChatEditorMenu getSelectedMenu() {
-        if (! selectedList.isEmpty()) {
-            return selectedList.get(selectedList.size()-1);
+    @Override
+    public boolean select(IChatEditorMenu menu) {
+        System.out.println("select");
+        if (disabled)
+            return false;
+        if (stack.isEmpty() == false) {
+            stack.peek().onDeselect();
         }
-        return null;
+        multicommand.clear();
+        stack.push(menu);
+        menu.onSelect(refToEdit);
+        sendMenu();
+        System.out.println("kuniec");
+        return true;
     }
 
-    protected void onRemove() {
-        if (getSelectedMenu() == null) {
-            if (selectedEditor != null && selectedEditor instanceof IChatEditorMenu)
-                ((IChatEditorMenu) selectedEditor).onDeselect(this);
-        }
-        else {
-            if (getSelectedMenu() instanceof IChatEditorMenu)
-                ((IChatEditorMenu) selectedEditor).onDeselect(this);
-        }
+    @Override
+    public GuiMultiCommand commands() {
+        return multicommand;
     }
 
-    public void send() {
-        if (!selectedList.isEmpty()) {
-            getPlayer().sendMessage("whatthefuck");
-            getSelectedMenu().sendMenu(getPlayer());
-            sendGoBack();
-        }
-        else {
-            if (selectedEditor instanceof IChatEditorMenu)
-                ((IChatEditorMenu) this.selectedEditor).sendMenu(getPlayer());
-            else {
-                selectedEditor.sendItem(getPlayer());
-
-            }
-//            TODO
-            TextComponent tc;
-            for (Map.Entry<String , String> p : this.addedCommands.entrySet()) {
-                tc = new TextComponent("["+p.getValue()+"]");
-                tc.setColor(ChatColor.GOLD);
-                tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , this.pointerToCommands.getCommand() + " " + p.getKey()));
-                getPlayer().spigot().sendMessage(tc);
-            }
-        }
+    @Override
+    public Object getObject() {
+        return toEdit;
     }
 
-    public void sendGoBack() {
-        TextComponent tc = new TextComponent("[<<<<<]");
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , this.backToEditorCommand));
-        tc.setColor(ChatColor.GREEN);
-        getPlayer().spigot().sendMessage(tc);
-    }
-
-
-    public Player getPlayer() {
-        return player.get();
-    }
-
-
-
-    public boolean isEditMode() {
-        return editMode;
-    }
-
+    @Override
     public void goBack() {
-        if (selectedList.isEmpty())
+        if (disabled)
             return;
-        getSelectedMenu().onDeselect(this);
-        selectedList.remove(selectedList.size()-1);
-        if (selectedList.isEmpty()) {
-            if (this.selectedEditor instanceof IChatEditorMenu)
-                ((IChatEditorMenu) this.selectedEditor).onSelect(this);
+        if (stack.isEmpty() == false) {
+            IChatEditorMenu menu = stack.pop();
+            menu.onDeselect();
+            multicommand.clear();
+            if (stack.isEmpty()) {
+                mainMenu.onSelect(refToEdit);
+            }
+            else {
+                stack.peek().onSelect(refToEdit);
+            }
+            sendMenu();
         }
-        send();
     }
 
+    private boolean firstUse = true;
 
-    protected void generate() {
+
+    private TextComponent goBack;
+
+    protected void firstUse() {
+        firstUse = false;
+        this.mainMenu.enableEditor(this ,refToEdit);
+        TextComponent in = new TextComponent("[<back<]");
+        in.setColor(ChatColor.GREEN);
         WeakReference<ChatCommandEditor> _instance = new WeakReference<>(this);
-        String command = this.commands.register(new SimpleButtonGui( c -> {
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , this.editorCommands.register(new SimpleButtonGui(p-> {
             _instance.get().goBack();
-        }));
-        this.backToEditorCommand = this.pointerToCommands.getCommand() + " " + command;
+        }))));
+        goBack = new TextComponent("****");
+        goBack.addExtra(in);
+        goBack.addExtra("****");
+        goBack.setColor(ChatColor.GRAY);
+    }
+
+    @Override
+    public void sendMenu() {
+        getPlayer().sendMessage(new String[]{"","","","","","","","","","","","",""});
+
+        if (firstUse) {
+            firstUse();
+        }
+        if (disabled)
+            return;
+        if (stack.isEmpty()) {
+            mainMenu.sendItem(getPlayer());
+        }
+        else {
+            stack.peek().sendItem(getPlayer());
+            getPlayer().spigot().sendMessage(goBack);
+        }
+    }
+
+    @Override
+    public Player getPlayer() {
+        return p;
+    }
 
 
-        data = new ArrayList<>();
-        if (this.type == null)
-            this.type = this.mainObject.getClass();
-        selectedEditor = ChatCommandEditor.getEditor(this.type);
-        RefCallBack<T> ref = new RefCallBack<>(this.mainObject);
-        ref.addCallBack( c-> {
-            _instance.get().mainObject = c.getValue();
-        });
-        this.selectedEditor.enable(new WeakReference<>(this) , "" , "" ,this.type, ref );
-        if (this.selectedEditor != null) {
-            if (this.selectedEditor instanceof IChatEditorMenu) {
-                ((IChatEditorMenu) this.selectedEditor).onSelect(this);
-            }
+    @Override
+    public void disable() {
+        disabled = true;
+        if (stack.isEmpty()) {
+            if (mainMenu != null)
+                mainMenu.onDeselect();
+        }
+        else {
+            IChatEditorMenu m = stack.peek();
+            m.onDeselect();
+
         }
     }
 
 
 
-    protected void generateForClass(Class clazz) {
-        ChatEditable editable;
-        IChatEditor editor;
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-        String description ;
-        WeakReference<ChatCommandEditor> _instance = new WeakReference<>(this);
-        String name;
-        for (Field f : clazz.getDeclaredFields()) {
-            editable = f.getAnnotation(ChatEditable.class);
-            if (editable == null)
-                continue;
-            if (editMode || editable.excludeInEdit())
-                continue;
-
-            if (f.isAccessible() == false)
-                f.setAccessible(true);
-
-            if (editable.name() == null || editable.name().isEmpty())
-                name = f.getType().getSimpleName();
-            else
-                name = editable.name();
-
-            if (editable.description() == null || editable.description().isEmpty())
-                description = "description";
-            else
-                description = editable.description();
-
-            editor = getEditor(f.getType());
-            if (editor == null) {
-//                :D
-//                TODO to nie powinno miec miejsca :D
-                SDIPlugin.instance.logWarning(this , "nie odnaleziono edytora do pola " + f.getType().getName());
-                continue;
-            }
-            EditorData d = new EditorData(mainObject);
-            d.editor = editor;
-
-            try {
-                d.setter = lookup.unreflectSetter(f);
-                d.getter = lookup.unreflectGetter(f);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                continue;
-            }
-            RefCallBack call = new RefCallBack();
-            call.addCallBack(c -> {
-                d.set(((Ref) c).getValue());
-            });
-            d.get();
-
-            data.add(d);
-            editor.enable(_instance ,name , description ,f.getType(), call);
-//            TODO
-        }
+    @Override
+    public void setExitConsumer(BiConsumer endResult) {
+        if (exitCode != null)
+            exitCode = endResult;
     }
 
-    public void addCommand(String command , GuiCommandArgs args) {
-        String id = this.commands.register(args);
-        this.addedCommands.put(id , command);
+        /*
+HACK
+    */
+    @Override
+    public IBaseObjectEditor getTreeRoot() {
+        return this;
     }
 
+    @Override
+    public void onSelect(Ref ref) {}
 
-    public void onDisable() {
-        pointerToCommands.dispose();
-//        TODO
+    @Override
+    public void onDeselect() {}
 
-    }
+    @Override
+    public void enableEditor(IChatEditorMenu owner, Ref ref) {}
+
+    @Override
+    public void disableEditor() {}
+
+    @Override
+    public void sendItem(Player p) {}
+
 
 }

@@ -1,7 +1,7 @@
 package com.niciel.superduperitems.serialization;
 
 import com.google.common.primitives.Ints;
-import com.niciel.superduperitems.utils.IManager;
+import com.niciel.superduperitems.managers.IManager;
 import com.niciel.superduperitems.utils.Ref;
 
 import java.nio.ByteBuffer;

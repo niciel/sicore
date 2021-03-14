@@ -1,6 +1,6 @@
 package com.niciel.superduperitems.inventory;
 
-import com.niciel.superduperitems.utils.IManager;
+import com.niciel.superduperitems.managers.IManager;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +10,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 import java.util.UUID;

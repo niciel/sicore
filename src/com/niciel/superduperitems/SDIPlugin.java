@@ -4,17 +4,22 @@ package com.niciel.superduperitems;
 import com.google.gson.GsonBuilder;
 import com.niciel.superduperitems.chunkdatastorage.ChunkManager;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
-import com.niciel.superduperitems.core.old.CraftingPatternListener;
-import com.niciel.superduperitems.core.zombie.ZombieGameManager;
+//import com.niciel.superduperitems.core.old.CraftingPatternListener;
+//import com.niciel.superduperitems.core.zombie.ZombieGameManager;
 import com.niciel.superduperitems.customitems.ItemManager;
-import com.niciel.superduperitems.fakeArmorstands.*;
+//import com.niciel.superduperitems.fakeArmorstands.*;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.gsonadapter.GsonSerializable;
+import com.niciel.superduperitems.gsonadapter.GsonVector;
+import com.niciel.superduperitems.gsonadapter.adapters.GsonBlockSerializer;
+import com.niciel.superduperitems.gsonadapter.adapters.GsonItemStackAdapter;
+import com.niciel.superduperitems.gsonadapter.adapters.GsonSerializableAdapter;
+import com.niciel.superduperitems.gsonadapter.adapters.GsonUUIDAdapter;
 import com.niciel.superduperitems.inGameEditor.ChatEditorManager;
 import com.niciel.superduperitems.inventory.InventoryManager;
+import com.niciel.superduperitems.managers.SiJavaPlugin;
 import com.niciel.superduperitems.particles.ParticleUtility;
 import com.niciel.superduperitems.serialization.PersistentSerializerManager;
-import com.niciel.superduperitems.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandExecutor;
@@ -37,8 +42,8 @@ public class SDIPlugin extends SiJavaPlugin implements Listener , CommandExecuto
     private PersistentSerializerManager serializiationManager ;
     private GuiCommandManager guiCommandManager;
     //private MiningManager miningManager;
-    private ZombieGameManager zombieManager;
-    private FakeArmorStandManager fakeArmorStandManager;
+    //private ZombieGameManager zombieManager;
+    //private FakeArmorStandManager fakeArmorStandManager;
     private ParticleUtility particleUtility;
 
     private ChatEditorManager editorManager;
@@ -71,16 +76,16 @@ public class SDIPlugin extends SiJavaPlugin implements Listener , CommandExecuto
         serializiationManager = new PersistentSerializerManager();
         guiCommandManager = new GuiCommandManager();
         //miningManager = new MiningManager();
-        this.chunkManager = new ChunkManager(this , p-> {
-            return zombieManager.getZPlayer(p);
-        });
-        zombieManager = new ZombieGameManager();
+        //this.chunkManager = new ChunkManager(this , p-> {
+            //return zombieManager.getZPlayer(p);
+        //});
+        //zombieManager = new ZombieGameManager();
         particleUtility = new ParticleUtility();
-        fakeArmorStandManager = new FakeArmorStandManager();
+       // fakeArmorStandManager = new FakeArmorStandManager();
         this.editorManager = new ChatEditorManager();
 
 
-        getServer().getPluginManager().registerEvents(new CraftingPatternListener() , this);
+        //getServer().getPluginManager().registerEvents(new CraftingPatternListener() , this);
         getServer().getPluginManager().registerEvents(this , this);
 
         Bukkit.getScheduler().runTaskTimer(this , r-> tick++ , 1l ,1l);

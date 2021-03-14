@@ -1,7 +1,7 @@
 package com.niciel.superduperitems.chunkdatastorage;
 
-import com.niciel.superduperitems.utils.IManager;
-import com.niciel.superduperitems.utils.SimpleCommandInfo;
+import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.Vector2int;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;

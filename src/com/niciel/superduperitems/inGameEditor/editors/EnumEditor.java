@@ -2,8 +2,7 @@ package com.niciel.superduperitems.inGameEditor.editors;
 
 import com.google.common.base.Enums;
 import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.CommandPointer;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
+import com.niciel.superduperitems.commandGui.*;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.EditorExtraData;
 import com.niciel.superduperitems.inGameEditor.IChatEditor;
@@ -24,57 +23,72 @@ import java.util.List;
 public class EnumEditor extends IChatEditor<Object> {
 
 
-    private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
     private HashMap<String , Object> map ;
-    private WeakReference<ChatCommandEditor> owner ;
     private boolean ERROR = false;
-    private CommandPointer editor;
+    private String editor;
     private Class enumType;
-    private String name;
+
     private Ref<Object> reference;
 
-    public EnumEditor(Class enumType) {
-        this.enumType = enumType;
+    /**
+     * @param name
+     * @param description
+     * @param clazz       class of object or if field ist null field type
+     */
+    public EnumEditor(String name, String description, Class clazz) {
+        super(name, description, clazz);
+        this.enumType = clazz;
         if (! enumType.isEnum()) {
             ERROR = true;
         }
+
+
     }
 
 
+
     @Override
-    public void enable(WeakReference<ChatCommandEditor> editor, String name, String description, Class type, Ref<Object> refToObject) {
-        this.owner = editor;
-        this.reference = refToObject;
-        this.map = new HashMap<>();
+    public void enableEditor(IChatEditorMenu owner, Ref<Object> ref) {
         if (ERROR)
             return;
+        this.reference = ref;
+        this.map = new HashMap<>();
         Object[] array = enumType.getEnumConstants();
-        this.name = name;
         String n = null;
         for (Object o : array) {
             n = ((Enum) o).name();
             map.put(n.toLowerCase() , o);
         }
+        Ref<String> id = new Ref<String>();
 
-        WeakReference<EnumEditor> _instance = new WeakReference<>(this);
-        this.editor = manager.registerGuiCommand( (pl,a) -> {
-            String ina = a.toLowerCase();
-            if (_instance.get().map.containsKey(ina)) {
-                Object o = _instance.get().map.get(ina);
-                _instance.get().reference.setValue(o);
-                _instance.get().owner.get().send();
+        String command = owner.getTreeRoot().commands().register(new GuiCommand() {
+            @Override
+            public void execute(Player p, String left) {
+                String ina = left.toLowerCase();
+                if (map.containsKey(ina)) {
+                    Object o = map.get(ina);
+                    reference.setValue(o);
+                }
+                else {
+                    p.playEffect(EntityEffect.HURT);
+                }
             }
-            else {
-                pl.playEffect(EntityEffect.HURT);
-            }
 
-        },this.getClass() , SDIPlugin.instance);
-
-        manager.registerGuiHelper(this.editor , (pl,a) -> {
-            List<String> out = SpigotUtils.findClosest(_instance.get().map.keySet() , a[0] , 10);
-            return out;
         });
+
+        owner.getTreeRoot().commands().register((String) ref.getValue() , new IGuiTabCompliter() {
+            @Override
+            public List<String> onTabComplite(Player sender, String[] args, int deep) {
+                List<String> out = SpigotUtils.findClosest(map.keySet() , args[deep] , 10);
+                return out;
+            }
+        });
+    }
+
+    @Override
+    public void disableEditor( ) {
+
     }
 
     @Override
@@ -83,10 +97,10 @@ public class EnumEditor extends IChatEditor<Object> {
             p.sendMessage("blad inicjalizacji");
             return;
         }
-        TextComponent tc  = new TextComponent("[" + SpigotUtils.fixStringLength("E:" + enumType.getSimpleName() , 4) + "] " + name + " ");
+        TextComponent tc  = new TextComponent("[" + SpigotUtils.fixStringLength("E:" + enumType.getSimpleName() , 4) + "] " + getName() + " ");
         TextComponent in = new TextComponent("[edytuj]");
         in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent( ClickEvent.Action.SUGGEST_COMMAND , editor.getCommand() + " "));
+        in.setClickEvent(new ClickEvent( ClickEvent.Action.SUGGEST_COMMAND , editor + " "));
         tc.addExtra(in);
         tc.addExtra(" " + reference.getValue());
         p.spigot().sendMessage(tc);

@@ -41,7 +41,7 @@ public final class SpigotCharTableUtils {
         }
         else {
             config = new YamlConfiguration();
-            config.addDefault("list" , Arrays.asList("00" , "0a"));
+            config.set("list" , Arrays.asList("00" , "0a"));
             try {
                 config.save(file);
             } catch (IOException e) {

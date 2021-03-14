@@ -9,25 +9,21 @@ import com.niciel.superduperitems.chunkdatastorage.ChunkData;
 import com.niciel.superduperitems.chunkdatastorage.ChunkManager;
 import com.niciel.superduperitems.chunkdatastorage.ChunkWorldManager;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
-import com.niciel.superduperitems.utils.IManager;
-import com.niciel.superduperitems.utils.SimpleCommandInfo;
+import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.*;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 @SimpleCommandInfo(command = "particles" , aliases =  {} , description = "jakos tak /[comenda]" , usage = "jakos tak /[comenda]" )
@@ -62,7 +58,7 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
         }
     }
 
-
+/*
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] cmd) {
@@ -169,6 +165,8 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
         return false;
     }
 
+
+ */
     public void loadParticlesSync() {
         JsonArray array;
         try {
@@ -249,4 +247,8 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
         editors.remove(e.getPlayer());
     }
 
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        return false;
+    }
 }

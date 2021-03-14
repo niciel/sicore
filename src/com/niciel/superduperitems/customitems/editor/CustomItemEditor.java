@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Editor extends CustomInventory {
+public class CustomItemEditor extends CustomInventory {
 
 
     private static ItemManager manager = SDIPlugin.instance.getManager(ItemManager.class);
@@ -28,7 +28,7 @@ public class Editor extends CustomInventory {
 
     ItemComponent component;
 
-    public Editor(Material material) {
+    public CustomItemEditor(Material material) {
         super(6, "edytor");
         is = new ItemStack(material);
         im = is.getItemMeta();

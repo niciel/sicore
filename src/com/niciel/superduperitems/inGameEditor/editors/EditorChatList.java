@@ -1,71 +1,96 @@
 package com.niciel.superduperitems.inGameEditor.editors;
 
-import com.google.gson.reflect.TypeToken;
 import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.CommandPointer;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
+import com.niciel.superduperitems.commandGui.SimpleButtonGui;
 import com.niciel.superduperitems.inGameEditor.*;
-import com.niciel.superduperitems.utils.Dual;
-import com.niciel.superduperitems.utils.Ref;
-import com.niciel.superduperitems.utils.RefCallBack;
-import com.niciel.superduperitems.utils.SpigotUtils;
+import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
+import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.utils.*;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class EditorChatList extends IChatEditorMenu<List>   {
+public class EditorChatList extends IChatEditorMenu<List> implements IFieldEditor  {
 
     private Class genericType;
-
+    private String genericName;
     private boolean selected;
     private Ref<List> reference;
+    private Collection<NewInstanceData> classes;
 
-    public EditorChatList(IBaseObjectEditor owner, String name, String description,  Class clazz , Field field) {
-        super(owner, name, description, clazz,field);
-        Type t = field.getGenericType();
-        if (t instanceof ParameterizedType) {
-            this.genericType = (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
-        }
-        else
-        {
-            SDIPlugin.instance.logWarning(this, "brak typu generycznego dla klasy: " + clazz.getName() + " field " +field.getName());
-            this.genericType = Object.class;
-        }
-        
+    private String selectToEditCommand;
+
+    private boolean generated = false;
+
+
+    public EditorChatList(IBaseObjectEditor owner, String name, String description,  Class clazz ) {
+        super(owner, name, description, clazz);
     }
 
     @Override
-    public void onSelect() {
-
+    public void onSelect(Ref<List> ref) {
+        selected = true;
     }
 
     @Override
     public void onDeselect() {
-
+        selected = false;
     }
 
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<List> ref) {
         reference = ref;
+        selectToEditCommand = owner.getTreeRoot().commands().register( new SimpleButtonGui(c-> {
+            owner.getTreeRoot().select(this);
+        }));
     }
 
     @Override
-    public void disableEditor(IChatEditorMenu owner) {
+    public void disableEditor() {
         reference = null;
     }
 
     @Override
     public void sendItem(Player p) {
+        if (selected){
 
+        }
+        else {
+            TextComponent tc = new TextComponent("[L:"+SpigotUtils.fixStringLength(genericName , 4) + "] " + getName() + " ");
+            TextComponent in = new TextComponent("[edytuj]");
+            in.setColor(ChatColor.GREEN);
+            //in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , sendEditList.getCommand()));
+            tc.addExtra(in);
+            tc.addExtra(" wielkosc: " + classes.size());
+            p.spigot().sendMessage(tc);
+        }
+    }
+
+    @Override
+    public void init(Field f) {
+        Type t = f.getGenericType();
+        Class clazz = f.getType();
+        if (t instanceof ParameterizedType) {
+            this.genericType = (Class) ((ParameterizedType) t).getActualTypeArguments()[0];
+        }
+        else
+        {
+            SDIPlugin.instance.logWarning(this, "brak typu generycznego dla klasy: " + clazz.getName() + " field " +f.getName());
+            this.genericType = Object.class;
+        }
+
+        if (genericType.isAnnotationPresent(ChatObjectName.class))
+            genericName = ((ChatObjectName) genericType.getAnnotation(ChatObjectName.class)).name();
+        else
+            genericName = genericType.getSimpleName();
+        classes = IManager.getManager(ChatEditorManager.class).getAllSubClasses(genericType);
+        generated = true;
     }
 
    /*

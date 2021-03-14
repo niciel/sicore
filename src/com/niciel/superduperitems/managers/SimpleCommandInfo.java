@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.utils;
+package com.niciel.superduperitems.managers;
 
 
 import java.lang.annotation.ElementType;

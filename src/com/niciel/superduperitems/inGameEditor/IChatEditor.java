@@ -19,15 +19,14 @@ public abstract class IChatEditor<T extends Object> {
      * @param name
      * @param description
      * @param clazz class of object or if field ist null field type
-     * @param field can be null, when editor is created for object
      */
-    public IChatEditor(String name, String description, Class clazz , Field field) {
+    public IChatEditor(String name, String description, Class clazz ) {
         this.name = name;
         this.description = description;
     }
 
     public abstract void enableEditor(IChatEditorMenu owner , Ref<T> ref);
-    public abstract void disableEditor(IChatEditorMenu owner);
+    public abstract void disableEditor();
 
     public abstract void sendItem(Player p);
 

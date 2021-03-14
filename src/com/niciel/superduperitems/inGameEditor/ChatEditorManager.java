@@ -1,95 +1,111 @@
 package com.niciel.superduperitems.inGameEditor;
 
-import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
-import com.niciel.superduperitems.fakeArmorstands.ArmorStandModelEditor;
+//import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
+//import com.niciel.superduperitems.fakeArmorstands.ArmorStandModelEditor;
+import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
+import com.niciel.superduperitems.managers.SiJavaPlugin;
+import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.Dual;
-import com.niciel.superduperitems.utils.IManager;
-import com.sun.org.apache.xpath.internal.res.XPATHErrorResources_zh_TW;
+import com.niciel.superduperitems.managers.IManager;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-public class ChatEditorManager implements IManager , Listener {
 
 
-    private  HashMap<String , Dual<Class , IChatEditorSuppiler>> classNameToEditor = new HashMap<>();
-    private  ArrayList<Dual<Predicate<Class>, IChatEditorSuppiler>> suppilerss = new ArrayList<>();
-    private HashMap<UUID , EditorData> editors = new HashMap<>();
 
-    private HashMap<String,Set<String>> classParents = new HashMap<>();
+@SimpleCommandInfo(command = "ingameeditor" , usage =  "" , description =  "" ,aliases = {})
+public class ChatEditorManager implements IManager , Listener , CommandExecutor {
+
+
+    private HashMap<String , Dual<Class , IChatEditorSuppiler>> classNameToEditor = new HashMap<>();
+    private ArrayList<Dual<Predicate<Class>, IChatEditorSuppiler>> suppilerss = new ArrayList<>();
+    private HashMap<UUID , IBaseObjectEditor> editors = new HashMap<>();
+
+    private HashMap<String,List<NewInstanceData>> classParents = new HashMap<>();
 
     public ChatEditorManager() {
         init();
     }
 
 
-    public <T> ChatCommandEditor<T> createChatCommandEditor(Player player , T toEdit) {
-        return new ChatCommandEditor<>(player , toEdit);
-    }
-
-    public <T> ChatCommandEditor<T> enableChatCommandEditor(Player player , T toEdit) {
-        ChatCommandEditor e = getEditor(player);
-        if( e != null) {
-            return e;
+    public <T> IBaseObjectEditor<T> createChatCommandEditor(Player player , T toEdit) {
+        if (getEditor(player) == null) {
+            ChatCommandEditor<T> editor = new ChatCommandEditor<>(player , toEdit);
+            editors.put(player.getUniqueId() , editor);
+            return editor;
         }
-        e = new ChatCommandEditor(player , toEdit);
-        enable(e , false);
-        return e;
+        return null;
     }
 
     protected void init() {
-        addSupplier(String.class , new PrimitiveSuppiler(String.class));
-        addSupplier(int.class , new PrimitiveSuppiler(String.class));
-        addSupplier(Integer.class , new PrimitiveSuppiler(String.class));
-        addSupplier(List.class , new PrimitiveSuppiler(String.class));
-        addSupplier(ArrayList.class , new PrimitiveSuppiler(String.class));
+        addSupplier(String.class , new PrimitiveSuppiler(EditorChatString.class));
+        addSupplier(int.class , new PrimitiveSuppiler(EditorChatInt.class));
+        addSupplier(Integer.class , new PrimitiveSuppiler(EditorChatInt.class));
+        //addSupplier(List.class , new PrimitiveSuppiler(EditorChatList.class));
+        //addSupplier(ArrayList.class , new PrimitiveSuppiler(EditorChatList.class));
         //addSupplier(p -> ItemStack.class.isAssignableFrom(p) , EditorChatItemStack::new);//TODO
-        addSupplier(Double.class , new PrimitiveSuppiler(String.class));
-        addSupplier(double.class , new PrimitiveSuppiler(String.class));
-        addSupplier(Float.class , new PrimitiveSuppiler(String.class));
-        addSupplier(float.class , new PrimitiveSuppiler(String.class));
-        addSupplier(Vector.class , new PrimitiveSuppiler(String.class));
-        addSupplier(ArmorStandModel.class , new PrimitiveSuppiler(String.class));
+        addSupplier(Double.class , new PrimitiveSuppiler(EditorChatDouble.class));
+        addSupplier(double.class , new PrimitiveSuppiler(EditorChatDouble.class));
+        addSupplier(Float.class , new PrimitiveSuppiler(EditorChatFloat.class));
+        addSupplier(float.class , new PrimitiveSuppiler(EditorChatFloat.class));
+        //addSupplier(Vector.class , new PrimitiveSuppiler(EditorChatVector.class));
+        //addSupplier(ArmorStandModel.class , new PrimitiveSuppiler(String.class));
     }
 
 
-    public void enable(ChatCommandEditor e , boolean allowmultiple) {
-        if (getEditor(e.getPlayer()) != null) {
-            return;
+
+    protected void removeEditor(Player p , EditorResult result) {
+        IBaseObjectEditor e = editors.get(p.getUniqueId());
+        if (e != null) {
+            e.disable();
+            editors.remove(p.getUniqueId());
         }
-        UUID uuid = e.getPlayer().getUniqueId();
-        e.generate();
-        editors.put(uuid , new EditorData(e , uuid ,allowmultiple ));
-        e.send();
     }
 
-    public void removeEditor(Player p) {
-        ChatCommandEditor e = getEditor(p);
-        if (e== null)
-            return;
-        e.onRemove();
-        editors.remove(p.getUniqueId());
-    }
-
-    public ChatCommandEditor getEditor(Player p) {
-        EditorData data = editors.get(p.getUniqueId());
-        if (data != null)
-            return data.editor;
-        return null;
+    public IBaseObjectEditor getEditor(Player p) {
+        return editors.get(p.getUniqueId());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        removeEditor(e.getPlayer());
+        if (editors.containsKey(e.getPlayer().getUniqueId())) {
+            this.removeEditor(e.getPlayer() , EditorResult.PLAYER_QUIT);
+        }
+
+    }
+
+
+    @Override
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (commandSender.isOp()== false)
+            return false;
+        if (strings.length == 0) {
+            commandSender.sendMessage("liczba otwartych edytorow: " +editors.size());
+//            TODO
+        }
+        else {
+            TestEditor t = new TestEditor();
+            IBaseObjectEditor<TestEditor> editor = this.createChatCommandEditor((Player) commandSender , t);
+            editor.setExitConsumer((reson,ed) -> {
+                if (reson.applayChanges()) {
+                    ed.getPlayer().sendMessage("hahaha");
+                }
+                else {
+                    SDIPlugin.instance.logInfo("jest mi bardzo smutno ale " + ed.getPlayer().getDisplayName() + " wyszedl z edytora :(, no i z serwera przy okazji");
+                }
+            });
+            editor.sendMenu();
+        }
+
+        return true;
     }
 
     public class EditorData {
@@ -114,36 +130,38 @@ public class ChatEditorManager implements IManager , Listener {
      */
     public void register(Class clazz) {
         Class c = clazz;
-        String base = clazz.getName();
-
+        NewInstanceData base = new NewInstanceData(c);
         while (c.getName().contentEquals(Object.class.getName()) == false) {
-            registerIfNotExists(base , c.getName());
+            registerIfNotExists(base , c);
             registerIfNotExists(base , c.getInterfaces());
             c = c.getSuperclass();
         }
     }
 
-    private void registerIfNotExists(String base , Class in[]) {
+    private void registerIfNotExists(NewInstanceData base , Class in[]) {
         for (Class clazz : in) {
-            registerIfNotExists(base , clazz.getName());
+            registerIfNotExists(base , clazz);
         }
     }
 
+    private boolean containsInClassesParentsCollection(String clazz , Collection<NewInstanceData> data) {
+        return data.stream().filter( p-> p.Clazz.equals(clazz)).findFirst().isPresent();
+    }
 
-        private void registerIfNotExists(String base , String in) {
-        Set<String> set = classParents.get(in);
+    private void registerIfNotExists(NewInstanceData base, Class in) {
+        List<NewInstanceData> set = classParents.get(in);
         if (set == null) {
-            set = new HashSet<>();
+            set = new ArrayList<>();
             set.add(base);
-            classParents.put(in , set);
+            classParents.put(in.getName() , set);
         }
         else {
-            if (set.contains(base) == false )
+            if (containsInClassesParentsCollection(base.Clazz , set) == false)
                 set.add(base);
         }
     }
 
-    public Set<String> getAllSubClasses(Class clazz) {
+    public List<NewInstanceData> getAllSubClasses(Class clazz) {
         String n = clazz.getName();
         if (! classParents.containsKey(n))
             register(clazz);
@@ -168,8 +186,7 @@ public class ChatEditorManager implements IManager , Listener {
                 return d.second.get(editor,clazz);
         }
 
-        if (clazz.isEnum())
-            return new EnumEditor(clazz);
+
 
         /* copy paste start*/
         String name;
@@ -182,9 +199,11 @@ public class ChatEditorManager implements IManager , Listener {
             name = clazz.getSimpleName();
             description = "?base?";
         }
+        if (clazz.isEnum())
+            return new EnumEditor(name,description , clazz);
 
         /* copy paste end*/
-        return new EditorChatObject(editor , name,description , clazz);
+        return new EditorChatObject(editor , name,description , clazz );
     }
 
 

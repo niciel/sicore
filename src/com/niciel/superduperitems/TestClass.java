@@ -1,6 +1,6 @@
 package com.niciel.superduperitems;
 
-import com.niciel.superduperitems.utils.IManager;
+import com.niciel.superduperitems.managers.IManager;
 import org.bukkit.event.Listener;
 
 import java.util.List;

@@ -1,15 +1,10 @@
 package com.niciel.superduperitems.commandGui;
 
 import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.utils.SiJavaPlugin;
+import com.niciel.superduperitems.utils.Ref;
 import com.niciel.superduperitems.utils.SpigotCharTableUtils;
-import com.niciel.superduperitems.utils.SpigotUtils;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 
 public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGuiCommandObject {
@@ -19,14 +14,14 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
     private HashMap<String , IGuiTabCompliter> tabCompiter = new HashMap<>();
 
     public GuiCommandArgs defaultCommand;
-    public IGuiTabCompliter defaultTabCompliterr;
+    public IGuiTabCompliter defaultTabCompleter;
     private HashSet<String> used = new HashSet<String>();
 
     private String command;
 
     /**
      * @param args
-     * @return  only id of sub command NOT a FULL COMMAND
+     * @return  full command id
      */
     public String register(GuiCommandArgs args) {
         String id = SpigotCharTableUtils.getNextRandomID(used);
@@ -36,15 +31,24 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
             tabCompiter.put(id , (IGuiTabCompliter) args);
         if (args instanceof IGuiCommandObject)
             ((IGuiCommandObject) args).init(command + " " + id);
-        return id;
+        return command + " " +id;
     }
+
+    public void register(String id , IGuiTabCompliter compliter) {
+        if (commands.containsKey(id)) {
+            tabCompiter.put(id,compliter);
+        }
+    }
+
 
     public void clear(){
         commands.clear();
         tabCompiter.clear();
     }
 
-
+    public String getCommand() {
+        return command;
+    }
 
     public void remove(String id) {
         commands.remove(id);
@@ -60,6 +64,9 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
                 a.onCommand(p,args,deep+1);
                 return;
             }
+            else {
+//                TODO jesli nie znalazlo co wyslac
+            }
         }
         if (defaultCommand != null)
             defaultCommand.onCommand(p,args,deep);
@@ -74,8 +81,8 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
                 return a.onTabComplite(sender, args, deep + 1);
             }
         }
-        if (defaultTabCompliterr != null)
-            return defaultTabCompliterr.onTabComplite(sender, args ,deep);
+        if (defaultTabCompleter != null)
+            return defaultTabCompleter.onTabComplite(sender, args ,deep);
         return null;
     }
 
@@ -83,4 +90,6 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
     public void init(String command) {
         this.command = command;
     }
+
+
 }

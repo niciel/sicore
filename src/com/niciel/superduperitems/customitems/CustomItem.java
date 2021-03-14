@@ -20,6 +20,7 @@ public class CustomItem  {
 
     protected ItemManager manager  = SDIPlugin.instance.getManager(ItemManager.class);
 
+
     @ChatEditable(name = "nameID")
     @Cfg(path =  "nameID")
     public String nameID;

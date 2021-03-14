@@ -24,12 +24,13 @@ public class EditorChatDouble extends IChatEditor<Double> {
     private String command;
 
 
-    public EditorChatDouble(String name, String description , Class clazz, Field field) {
-        super(name, description, clazz,field);
+    public EditorChatDouble(String name, String description , Class clazz ) {
+        super(name, description, clazz);
     }
 
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<Double> ref) {
+        this.ref = ref;
         command = owner.getTreeRoot().commands().register(new GuiCommand() {
             @Override
             public void execute(Player p, String s) {
@@ -51,7 +52,7 @@ public class EditorChatDouble extends IChatEditor<Double> {
     }
 
     @Override
-    public void disableEditor(IChatEditorMenu owner) {
+    public void disableEditor() {
         ref = null;
     }
 

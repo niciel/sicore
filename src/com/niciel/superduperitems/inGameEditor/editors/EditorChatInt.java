@@ -23,13 +23,14 @@ public class EditorChatInt extends IChatEditor<Integer> {
     private Ref<Integer> ref;
 
 
-    public EditorChatInt(String name, String description,  Class clazz , Field field) {
-        super(name, description, clazz,field);
+    public EditorChatInt(String name, String description,  Class clazz ) {
+        super(name, description, clazz);
     }
 
 
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<Integer> ref) {
+        this.ref = ref;
         pointer = owner.getTreeRoot().commands().register(new GuiCommand() {
             @Override
             public void execute(Player p, String s) {
@@ -51,13 +52,13 @@ public class EditorChatInt extends IChatEditor<Integer> {
     }
 
     @Override
-    public void disableEditor(IChatEditorMenu owner) {
+    public void disableEditor() {
         ref = null;
     }
 
     @Override
     public void sendItem(Player p) {
-        TextComponent tc = new TextComponent("[Intege] " + getName() + " ");
+        TextComponent tc = new TextComponent("[Integer] " + getName() + " ");
         TextComponent in = new TextComponent("[edytuj]");
         tc.setColor(ChatColor.WHITE);
 

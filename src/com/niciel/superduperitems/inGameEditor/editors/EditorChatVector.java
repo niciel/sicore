@@ -4,6 +4,7 @@ import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.CommandPointer;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
+import com.niciel.superduperitems.inGameEditor.IBaseObjectEditor;
 import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
 import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
@@ -21,7 +22,38 @@ import java.util.HashMap;
 
 
 public class EditorChatVector extends IChatEditorMenu<Vector> {
+    public EditorChatVector(IBaseObjectEditor owner, String name, String description, Class clazz) {
+        super(owner, name, description, clazz);
+    }
 
+    @Override
+    public void onSelect(Ref<Vector> ref) {
+
+    }
+
+    @Override
+    public void onDeselect() {
+
+    }
+
+    @Override
+    public void enableEditor(IChatEditorMenu owner, Ref<Vector> ref) {
+
+    }
+
+    @Override
+    public void disableEditor( ) {
+
+    }
+
+    @Override
+    public void sendItem(Player p) {
+
+    }
+
+
+
+    /*
     private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
     private Vector vector;
@@ -215,4 +247,8 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
         public double get();
         public void set(double d);
     }
+
+
+
+     */
 }

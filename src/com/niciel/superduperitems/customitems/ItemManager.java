@@ -2,13 +2,12 @@ package com.niciel.superduperitems.customitems;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.niciel.superduperitems.GsonItemComponent;
+import com.niciel.superduperitems.gsonadapter.GsonItemComponent;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.cfg.ConfigApi;
 import com.niciel.superduperitems.cfg.ObjectCfgSerializer;
 import com.niciel.superduperitems.commandGui.CommandPointer;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.customitems.components.BlockDamageComponent;
 import com.niciel.superduperitems.customitems.components.Durability;
 import com.niciel.superduperitems.customitems.components.ItemInitialization;
@@ -18,6 +17,8 @@ import com.niciel.superduperitems.customitems.components.actions.ICustomItemActi
 import com.niciel.superduperitems.customitems.event.EventCreateItem;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.ChatEditorManager;
+import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.*;
 import com.niciel.superduperitems.utils.itemstack.ItemBuilder;
 import net.md_5.bungee.api.ChatColor;
@@ -50,7 +51,7 @@ import java.util.logging.Level;
 
 
 @SimpleCommandInfo(command = "itemmanager" , aliases =  {} , description = "jakos tak /[comenda]" , usage = "jakos tak /[comenda]" )
-public class ItemManager  implements IManager , Listener , CommandExecutor {
+public class ItemManager  implements IManager, Listener , CommandExecutor {
 
     private WeakReference<ChatEditorManager> editor;
     public static String PERMISSION_COMMAND = "sdi.itemManager.admin";
@@ -133,11 +134,12 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
         nameToAction.put(type , a);
     }
 
-
+/*
     protected void _initalizeCommands() {
         GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
         WeakReference<ItemManager> _instance = new WeakReference<>(this);
+
 
 
         pointerEditItem = SDIPlugin.instance.getManager(GuiCommandManager.class).registerGuiCommand((p,a) -> {
@@ -226,6 +228,7 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
         commandPointers.add(cp);
 
 
+
 //        cp = manager.registerGuiCommand((p,a) -> {
 //            if (p.hasPermission(PERMISSION_COMMAND)) {
 //                CustomItem ci = _instance.get().getCustomItem(a);
@@ -273,6 +276,8 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
 
     }
 
+ */
+
     @Override
     public void onLateEnable() {
         this.dataFile = new File (SDIPlugin.instance.getDataFolder() , "customItems");
@@ -311,7 +316,7 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
 
         editor = new WeakReference<>(SDIPlugin.instance.getManager(ChatEditorManager.class));
 
-        _initalizeCommands();
+        //_initalizeCommands();
         categorys = new DataInventory<ItemCategory>(6 , "categorys");
         defaultCategory = new ItemCategory();
         defaultCategory.name = "void";
@@ -536,6 +541,8 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
         }
     }
 
+    /*
+
     public ChatCommandEditor getEditor(Player p) {
         return this.editor.get().getEditor(p);
     }
@@ -565,6 +572,7 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
         });
         categoryEditors.add(editor);
         this.editor.get().enable(editor , true);
+
         return true;
     }
 
@@ -656,6 +664,10 @@ public class ItemManager  implements IManager , Listener , CommandExecutor {
         this.editor.get().enable(editor , false);
         return true;
     }
+
+
+
+     */
 
     public void reloadCategorys() {
         categorys = new DataInventory<>(6 , "przedmioty");

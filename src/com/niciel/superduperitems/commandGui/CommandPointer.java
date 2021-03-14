@@ -44,7 +44,7 @@ public class CommandPointer {
 
     public void setGuiCommand(GuiCommandArgs a) {
         this.guiCommand = a;
-        if (a != null || a.getClass().isAssignableFrom(IGuiCommandObject.class))
+        if (a != null && a instanceof IGuiCommandObject)
             ((IGuiCommandObject) a).init(getCommand());
     }
 

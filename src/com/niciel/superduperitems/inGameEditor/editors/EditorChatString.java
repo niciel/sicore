@@ -2,6 +2,7 @@ package com.niciel.superduperitems.inGameEditor.editors;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.CommandPointer;
+import com.niciel.superduperitems.commandGui.GuiCommand;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.EditorExtraData;
@@ -23,52 +24,47 @@ public class EditorChatString extends IChatEditor<String> {
 
     private static GuiCommandManager command = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
-    private CommandPointer pointer;
-    private WeakReference<ChatCommandEditor> editor;
+    private String pointer;
     private Ref<String> ref;
-    private String name;
 
-    public EditorChatString() {}
-
-
+    /**
+     * @param name
+     * @param description
+     * @param clazz       class of object or if field ist null field type
+     */
+    public EditorChatString(String name, String description, Class clazz) {
+        super(name, description, clazz);
+    }
 
 
     @Override
-    public void enable(WeakReference<ChatCommandEditor> editor, String name, String description, Class type, Ref<String> refToObject) {
-        this.ref = refToObject;
-        this.editor = editor;
-        this.name = name;
+    public void enableEditor(IChatEditorMenu owner, Ref<String> ref) {
+        this.ref = ref;
+        pointer = owner.getTreeRoot().commands().register(new GuiCommand() {
+            @Override
+            public void execute(Player p, String left) {
+                ref.setValue(ChatColor.translateAlternateColorCodes('&' , left));
+            }
+        });
+    }
 
-
-
-        if (refToObject.getValue() == null) {
-            refToObject.setValue("");
-        }
-
-
-        WeakReference<EditorChatString> _instance = new WeakReference<>(this);
-        WeakReference<Ref<String>> _ref = new WeakReference<>(refToObject);
-        pointer = command.registerGuiCommand( (p,s) ->
-                {
-                    String out = ChatColor.translateAlternateColorCodes('&' , s);
-                    _ref.get().setValue(out);
-                    _instance.get().editor.get().send();
-                }
-                , this.getClass() , SDIPlugin.instance);
+    @Override
+    public void disableEditor( ) {
+        ref = null;
     }
 
     @Override
     public void sendItem(Player p) {
-        TextComponent tc = new TextComponent("[String] " + name + " ");
+        TextComponent tc = new TextComponent("[String] " + getName() + " ");
         TextComponent in = new TextComponent("[ustaw]");
         tc.setColor(ChatColor.WHITE);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer.getCommand() + " "));
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer + " "));
         in.setColor(ChatColor.GREEN);
         tc.addExtra(in);
         if (ref.getValue() != null && ! ref.getValue().isEmpty()) {
             in = new TextComponent("[edytuj]");
             tc.setColor(ChatColor.WHITE);
-            in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer.getCommand() + " " + ref.getValue()));
+            in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer + " " + ref.getValue()));
             in.setColor(ChatColor.GREEN);
             tc.addExtra(in);
         }

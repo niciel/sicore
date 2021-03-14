@@ -1,8 +1,6 @@
-package com.niciel.superduperitems.utils;
+package com.niciel.superduperitems.managers;
 
 import com.niciel.superduperitems.SDIPlugin;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.event.Listener;
 
 public interface IManager  {
 

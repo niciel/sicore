@@ -6,10 +6,10 @@ import com.niciel.superduperitems.EventListenerHelper.RegisteredEventPointer;
 import com.niciel.superduperitems.chunkdatastorage.*;
 import com.niciel.superduperitems.commandGui.CommandPointer;
 import com.niciel.superduperitems.commandGui.GuiCommandManager;
-import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
+//import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditableMethod;
-import com.niciel.superduperitems.inGameEditor.editors.EditorChatMethod;
+//import com.niciel.superduperitems.inGameEditor.editors.EditorChatMethod;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -34,7 +34,7 @@ public class TestBlock implements IChunkObject , ICustomBlock {
 
     private List<Vector> blocks;
 
-    private ArmorStandModel model;
+    //private ArmorStandModel model;
 
     private PlayerIterator players;
 
@@ -69,31 +69,31 @@ public class TestBlock implements IChunkObject , ICustomBlock {
     }
 
 
-    @ChatEditableMethod
-    public void testEdytor(EditorChatMethod<RegisteredEventPointer<BlockPlaceEvent>> d) {
-        WeakReference<TestBlock> _instance = new WeakReference<>(this);
-        if (d.data == null) {
-            d.data = new RegisteredEventPointer<BlockPlaceEvent>(BlockPlaceEvent.class, SDIPlugin.instance,
-                    EventPriority.LOWEST, false) {
-
-                @Override
-                public void onEvent(BlockPlaceEvent e) {
-                    e.getPlayer().sendMessage("tada");
-                }
-            };
-            d.data.register();
-            WeakReference<EditorChatMethod<CustomRegisteredListener>> _method = new WeakReference(d);
-            CommandPointer pointer = SDIPlugin.instance.getManager(GuiCommandManager.class).registerGuiCommand((p,a) -> {
-                _method.get().data.setSuspended(!_method.get().data.isSuspended());
-//                _method.get().editor.get().send();
-            }, this.getClass() , SDIPlugin.instance) ;
-            //d.setData("change" , pointer);
-
-        }
-        TextComponent tc = new TextComponent(" listener: " + !d.data.isSuspended());
-       // tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , d.getData("change"  , CommandPointer.class).getCommand()));
-//        d.player.get().spigot().sendMessage(tc);
-    }
+//    @ChatEditableMethod
+//    public void testEdytor(EditorChatMethod<RegisteredEventPointer<BlockPlaceEvent>> d) {
+//        WeakReference<TestBlock> _instance = new WeakReference<>(this);
+//        if (d.data == null) {
+//            d.data = new RegisteredEventPointer<BlockPlaceEvent>(BlockPlaceEvent.class, SDIPlugin.instance,
+//                    EventPriority.LOWEST, false) {
+//
+//                @Override
+//                public void onEvent(BlockPlaceEvent e) {
+//                    e.getPlayer().sendMessage("tada");
+//                }
+//            };
+//            d.data.register();
+//            WeakReference<EditorChatMethod<CustomRegisteredListener>> _method = new WeakReference(d);
+//            CommandPointer pointer = SDIPlugin.instance.getManager(GuiCommandManager.class).registerGuiCommand((p,a) -> {
+//                _method.get().data.setSuspended(!_method.get().data.isSuspended());
+////                _method.get().editor.get().send();
+//            }, this.getClass() , SDIPlugin.instance) ;
+//            //d.setData("change" , pointer);
+//
+//        }
+//        TextComponent tc = new TextComponent(" listener: " + !d.data.isSuspended());
+//       // tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , d.getData("change"  , CommandPointer.class).getCommand()));
+////        d.player.get().spigot().sendMessage(tc);
+//    }
 
 
     @Override

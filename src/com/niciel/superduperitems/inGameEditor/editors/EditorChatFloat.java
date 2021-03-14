@@ -24,13 +24,14 @@ public class EditorChatFloat extends IChatEditor<Float> {
     private Ref<Float> ref;
 
 
-    public EditorChatFloat(String name, String description,  Class clazz , Field field) {
-        super(name, description, clazz,field);
+    public EditorChatFloat(String name, String description,  Class clazz ) {
+        super(name, description, clazz);
     }
 
 
     @Override
     public void enableEditor(IChatEditorMenu owner, Ref<Float> ref) {
+        this.ref = ref;
         pointer = owner.getTreeRoot().commands().register(new GuiCommand() {
             @Override
             public void execute(Player p, String s) {
@@ -52,7 +53,7 @@ public class EditorChatFloat extends IChatEditor<Float> {
     }
 
     @Override
-    public void disableEditor(IChatEditorMenu owner) {
+    public void disableEditor( ) {
 
     }
 
