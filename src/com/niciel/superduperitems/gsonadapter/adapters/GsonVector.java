@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.gsonadapter;
+package com.niciel.superduperitems.gsonadapter.adapters;
 
 import com.google.gson.*;
 import org.bukkit.util.Vector;

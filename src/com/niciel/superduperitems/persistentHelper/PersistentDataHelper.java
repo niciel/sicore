@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.serialization;
+package com.niciel.superduperitems.persistentHelper;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.utils.Ref;

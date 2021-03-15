@@ -1,9 +1,8 @@
 package com.niciel.superduperitems.customitems;
 
-import com.niciel.superduperitems.serialization.PersistentDataHelper;
+import com.niciel.superduperitems.persistentHelper.PersistentDataHelper;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 
 public class ComponentDataPersistent<T> extends PersistentDataHelper<T> {
 

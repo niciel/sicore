@@ -1,13 +1,17 @@
-package com.niciel.superduperitems.commandGui;
+package com.niciel.superduperitems.commandGui.helpers;
 
 import com.niciel.superduperitems.SDIPlugin;
+import com.niciel.superduperitems.commandGui.GuiCommandArgs;
+import com.niciel.superduperitems.commandGui.GuiCommandManager;
+import com.niciel.superduperitems.commandGui.IGuiCommandObject;
+import com.niciel.superduperitems.commandGui.IGuiTabCompliter;
 import com.niciel.superduperitems.utils.Ref;
 import com.niciel.superduperitems.utils.SpigotCharTableUtils;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGuiCommandObject {
+public class GuiMultiCommand implements GuiCommandArgs, IGuiTabCompliter, IGuiCommandObject {
 
     private static GuiCommandManager manager = SDIPlugin.instance.getManager(GuiCommandManager.class);
     private HashMap<String , GuiCommandArgs> commands = new HashMap<>();
@@ -23,7 +27,7 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
      * @param args
      * @return  full command id
      */
-    public String register(GuiCommandArgs args) {
+    public String register(GuiCommandArgs args ) {
         String id = SpigotCharTableUtils.getNextRandomID(used);
         used.add(id);
         commands.put(id , args);
@@ -34,10 +38,13 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
         return command + " " +id;
     }
 
-    public void register(String id , IGuiTabCompliter compliter) {
+    public boolean register(String id , IGuiTabCompliter compliter) {
+        id = id.replaceFirst(getCommand() + " " , "");
         if (commands.containsKey(id)) {
             tabCompiter.put(id,compliter);
+            return true;
         }
+        return false;
     }
 
 
@@ -75,6 +82,7 @@ public class GuiMultiCommand implements GuiCommandArgs , IGuiTabCompliter , IGui
 
     @Override
     public List<String> onTabComplite(Player sender, String[] args, int deep) {
+        System.out.println("onTabk");
         if (args.length > deep) {
             IGuiTabCompliter a = tabCompiter.get((args[deep]));
             if (a != null) {

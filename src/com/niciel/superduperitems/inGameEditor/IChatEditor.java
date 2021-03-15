@@ -12,7 +12,7 @@ public abstract class IChatEditor<T extends Object> {
 
     private String name;
     private String description;
-
+    private Ref<T> reference;
 
     /**
      *
@@ -25,8 +25,18 @@ public abstract class IChatEditor<T extends Object> {
         this.description = description;
     }
 
-    public abstract void enableEditor(IChatEditorMenu owner , Ref<T> ref);
+    public abstract void enableEditor(IChatEditorMenu owner);
     public abstract void disableEditor();
+
+
+    public void initialize(Ref<T> reference) {
+        if (this.reference == null)
+            this.reference = reference;
+    }
+
+    public Ref<T> getReference() {
+        return this.reference;
+    }
 
     public abstract void sendItem(Player p);
 

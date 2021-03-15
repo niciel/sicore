@@ -1,7 +1,7 @@
 package com.niciel.superduperitems.inGameEditor;
 
-import com.niciel.superduperitems.commandGui.GuiMultiCommand;
-import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.commandGui.helpers.GuiMultiCommand;
+import com.niciel.superduperitems.utils.Ref;
 import org.bukkit.entity.Player;
 
 import java.util.function.BiConsumer;
@@ -12,8 +12,6 @@ public interface IBaseObjectEditor<T> {
 
     GuiMultiCommand commands();
 
-    T getObject();
-
     void goBack();
 
     void sendMenu();
@@ -22,7 +20,8 @@ public interface IBaseObjectEditor<T> {
 
     public void setExitConsumer(BiConsumer<EditorResult , IBaseObjectEditor> endResult);
 
-    public void disable();
+    public void disable(EditorResult res);
 
+    Ref getReference() ;
 
 }

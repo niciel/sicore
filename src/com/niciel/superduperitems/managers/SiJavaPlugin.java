@@ -3,6 +3,7 @@ package com.niciel.superduperitems.managers;
 import com.niciel.superduperitems.utils.SimpleCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -111,7 +112,7 @@ public class SiJavaPlugin extends JavaPlugin {
             if (c instanceof CommandExecutor) {
                 SimpleCommandInfo sc = c.getClass().getAnnotation(SimpleCommandInfo.class);
                 if (sc != null) {
-                    new SimpleCommand((CommandExecutor) c , sc.command() , sc.description() , sc.usage() , Arrays.asList(sc.aliases()));
+                    SimpleCommand command =  new SimpleCommand((CommandExecutor) c , sc.command() , sc.description() , sc.usage() , Arrays.asList(sc.aliases()));
                 }
             }
             logInfo("zarejestrowano manager: " + c.getClass().getName());

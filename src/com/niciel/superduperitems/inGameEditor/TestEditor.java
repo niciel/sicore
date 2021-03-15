@@ -12,4 +12,8 @@ public class TestEditor {
     private float floatTest = 1.0f;
     @ChatEditable
     private String stringTest = "string test";
+
+    @ChatEditable
+    private TestInner objectTest = new TestInner();
+
 }

@@ -5,7 +5,8 @@ package com.niciel.superduperitems.inGameEditor;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
-import com.niciel.superduperitems.managers.SiJavaPlugin;
+import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
+import com.niciel.superduperitems.inGameEditor.editors.object.EnumEditor;
 import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.Dual;
 import com.niciel.superduperitems.managers.IManager;
@@ -62,12 +63,9 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
 
 
 
-    protected void removeEditor(Player p , EditorResult result) {
-        IBaseObjectEditor e = editors.get(p.getUniqueId());
-        if (e != null) {
-            e.disable();
+    protected void removePlayerFromEditorMap(Player p) {
+        if (editors.containsKey(p.getUniqueId()))
             editors.remove(p.getUniqueId());
-        }
     }
 
     public IBaseObjectEditor getEditor(Player p) {
@@ -77,7 +75,8 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         if (editors.containsKey(e.getPlayer().getUniqueId())) {
-            this.removeEditor(e.getPlayer() , EditorResult.PLAYER_QUIT);
+            IBaseObjectEditor editor = editors.remove(e.getPlayer().getUniqueId());
+            editor.disable(EditorResult.PLAYER_QUIT);
         }
 
     }
@@ -92,7 +91,7 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
 //            TODO
         }
         else {
-            TestEditor t = new TestEditor();
+            TestExtends t = new TestExtends();
             IBaseObjectEditor<TestEditor> editor = this.createChatCommandEditor((Player) commandSender , t);
             editor.setExitConsumer((reson,ed) -> {
                 if (reson.applayChanges()) {

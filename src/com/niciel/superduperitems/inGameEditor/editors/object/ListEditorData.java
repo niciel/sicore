@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.inGameEditor.editors;
+package com.niciel.superduperitems.inGameEditor.editors.object;
 
 import com.niciel.superduperitems.commandGui.CommandPointer;
 import com.niciel.superduperitems.inGameEditor.IChatEditor;

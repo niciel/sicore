@@ -1,27 +1,18 @@
 package com.niciel.superduperitems.inGameEditor.editors;
 
-import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.CommandPointer;
-import com.niciel.superduperitems.commandGui.GuiCommand;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
-import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
+import com.niciel.superduperitems.commandGui.helpers.GuiCommand;
 import com.niciel.superduperitems.inGameEditor.IChatEditor;
 import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
-import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
-
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
 
 public class EditorChatFloat extends IChatEditor<Float> {
 
 
 
     private String pointer;
-    private Ref<Float> ref;
 
 
     public EditorChatFloat(String name, String description,  Class clazz ) {
@@ -30,8 +21,7 @@ public class EditorChatFloat extends IChatEditor<Float> {
 
 
     @Override
-    public void enableEditor(IChatEditorMenu owner, Ref<Float> ref) {
-        this.ref = ref;
+    public void enableEditor(IChatEditorMenu owner) {
         pointer = owner.getTreeRoot().commands().register(new GuiCommand() {
             @Override
             public void execute(Player p, String s) {
@@ -45,8 +35,8 @@ public class EditorChatFloat extends IChatEditor<Float> {
                     return;
                 }
 
-                if (ref.getValue() != i) {
-                    ref.setValue(i);
+                if (getReference().getValue() != i) {
+                    getReference().setValue(i);
                 }
             }
         });
@@ -66,7 +56,7 @@ public class EditorChatFloat extends IChatEditor<Float> {
         in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND ,pointer + " "));
         in.setColor(ChatColor.GREEN);
         tc.addExtra(in);
-        tc.addExtra(" wartosc: " + ref.getValue());
+        tc.addExtra(" wartosc: " + getReference().getValue());
         p.spigot().sendMessage(tc);
     }
 }

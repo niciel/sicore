@@ -7,7 +7,7 @@ import com.niciel.superduperitems.customitems.CustomItem;
 import com.niciel.superduperitems.customitems.ItemComponent;
 import com.niciel.superduperitems.customitems.event.EventCreateItem;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import com.niciel.superduperitems.serialization.PersistentData;
+import com.niciel.superduperitems.persistentHelper.PersistentData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;

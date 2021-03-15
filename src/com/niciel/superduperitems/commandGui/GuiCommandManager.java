@@ -1,5 +1,6 @@
 package com.niciel.superduperitems.commandGui;
 
+import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
 import com.niciel.superduperitems.managers.IManager;
 import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.SpigotCharTableUtils;
@@ -24,17 +25,13 @@ import java.util.*;
 public class GuiCommandManager implements IManager , CommandExecutor , Listener , TabCompleter {
 
     private static HashMap<String , WeakReference<CommandPointer>> stringIDtoPointer;
-    private static Set<String> usedIDS = new HashSet<String>();
 
+    private static Set<String> usedIDS = new HashSet<String>();
     private static String command = "guicommand";
     private static boolean showStaticPointers = false;
     private static String permissionToForceGC = "forceGcPermission";
-
     private CommandPointer forceGCCommandPointer;
-
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy:M:dd - hh:mm:ss");
-
-
 
     @Override
     public void onEnable() {
@@ -126,7 +123,7 @@ public class GuiCommandManager implements IManager , CommandExecutor , Listener 
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command c, String s, String[] strings) {
-        if ( (sender instanceof  Player))
+        if ( (sender instanceof  Player)==false)
             return null;
         if (strings.length > 1) {
             CommandPointer p = getCommandPointer(strings[0]);

@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.serialization;
+package com.niciel.superduperitems.persistentHelper;
 
 import com.google.common.primitives.Ints;
 import com.niciel.superduperitems.managers.IManager;

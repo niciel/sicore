@@ -44,8 +44,14 @@ public class CommandPointer {
 
     public void setGuiCommand(GuiCommandArgs a) {
         this.guiCommand = a;
-        if (a != null && a instanceof IGuiCommandObject)
+        if (a == null) {
+            this.compliter = null;
+            return;
+        }
+        if (a instanceof IGuiCommandObject)
             ((IGuiCommandObject) a).init(getCommand());
+        if (a instanceof IGuiTabCompliter)
+            this.compliter = (IGuiTabCompliter) a;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.inGameEditor.editors;
+package com.niciel.superduperitems.inGameEditor.editors.object;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.CommandPointer;
@@ -27,7 +27,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     }
 
     @Override
-    public void onSelect(Ref<Vector> ref) {
+    public void onSelect(IChatEditorMenu menu) {
 
     }
 
@@ -37,7 +37,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner, Ref<Vector> ref) {
+    public void enableEditor(IChatEditorMenu owner) {
 
     }
 

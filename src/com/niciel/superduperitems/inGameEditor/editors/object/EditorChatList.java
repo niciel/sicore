@@ -1,7 +1,7 @@
-package com.niciel.superduperitems.inGameEditor.editors;
+package com.niciel.superduperitems.inGameEditor.editors.object;
 
 import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.SimpleButtonGui;
+import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
 import com.niciel.superduperitems.inGameEditor.*;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.managers.IManager;
@@ -34,7 +34,7 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
     }
 
     @Override
-    public void onSelect(Ref<List> ref) {
+    public void onSelect(IChatEditorMenu menu) {
         selected = true;
     }
 
@@ -44,12 +44,13 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner, Ref<List> ref) {
-        reference = ref;
+    public void enableEditor(IChatEditorMenu owner) {
         selectToEditCommand = owner.getTreeRoot().commands().register( new SimpleButtonGui(c-> {
             owner.getTreeRoot().select(this);
         }));
     }
+
+
 
     @Override
     public void disableEditor() {

@@ -1,5 +1,6 @@
-package com.niciel.superduperitems.commandGui;
+package com.niciel.superduperitems.commandGui.helpers;
 
+import com.niciel.superduperitems.commandGui.GuiCommandArgs;
 import com.niciel.superduperitems.utils.SpigotUtils;
 import org.bukkit.entity.Player;
 

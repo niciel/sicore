@@ -1,8 +1,6 @@
-package com.niciel.superduperitems.serialization;
+package com.niciel.superduperitems.persistentHelper;
 
 import com.niciel.superduperitems.utils.Ref;
-
-import java.lang.ref.Reference;
 
 public interface IPersistentSerialize<T> {
 
