@@ -17,11 +17,4 @@ public class NewInstanceData {
         description = "TODO";
         this.Clazz = clazz.getName();
     }
-
-
-    public NewInstanceData(String clazz, String name, String description) {
-        Clazz = clazz;
-        this.name = name;
-        this.description = description;
-    }
 }

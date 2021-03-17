@@ -6,12 +6,8 @@ import com.niciel.superduperitems.gsonadapter.GsonManager;
 public interface GsonSerializable {
 
 
-    public default JsonObject serialize() {
-        return GsonManager.serializeObject(this).getAsJsonObject();
-    }
+    JsonObject serialize();
 
-    public default void deserialize(JsonObject o) {
-        GsonManager.deserializeObject(this , o);
-    }
+    void deserialize(JsonObject o);
 
 }

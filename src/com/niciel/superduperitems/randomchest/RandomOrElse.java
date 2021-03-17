@@ -1,5 +1,6 @@
 package com.niciel.superduperitems.randomchest;
 
+import com.google.gson.JsonObject;
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 import org.bukkit.inventory.ItemStack;
@@ -29,5 +30,13 @@ public class RandomOrElse implements IRandomBlock {
     }
 
 
+    @Override
+    public JsonObject serialize() {
+        return null;
+    }
 
+    @Override
+    public void deserialize(JsonObject o) {
+
+    }
 }

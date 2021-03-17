@@ -2,7 +2,9 @@ package com.niciel.superduperitems.inGameEditor;
 
 //import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
 //import com.niciel.superduperitems.fakeArmorstands.ArmorStandModelEditor;
+import com.google.gson.stream.JsonWriter;
 import com.niciel.superduperitems.SDIPlugin;
+import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
@@ -17,6 +19,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -43,6 +49,7 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
             editors.put(player.getUniqueId() , editor);
             return editor;
         }
+        getEditor(player).sendMenu();
         return null;
     }
 
@@ -78,7 +85,6 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
             IBaseObjectEditor editor = editors.remove(e.getPlayer().getUniqueId());
             editor.disable(EditorResult.PLAYER_QUIT);
         }
-
     }
 
 
@@ -91,7 +97,20 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
 //            TODO
         }
         else {
+            commandSender.sendMessage("zapisuje");
             TestExtends t = new TestExtends();
+            File toSave = new File(SDIPlugin.instance.getDataFolder() , "test.yml");
+            try {
+                FileWriter w = new FileWriter(toSave);
+                w.write(GsonManager.getInstance().toJson(t).toString());
+                w.flush();
+                w.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            commandSender.sendMessage("zapisano teraz wczytam");
+            
+            /*
             IBaseObjectEditor<TestEditor> editor = this.createChatCommandEditor((Player) commandSender , t);
             editor.setExitConsumer((reson,ed) -> {
                 if (reson.applayChanges()) {
@@ -102,6 +121,8 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
                 }
             });
             editor.sendMenu();
+
+             */
         }
 
         return true;

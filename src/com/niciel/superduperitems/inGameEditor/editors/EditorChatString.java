@@ -14,7 +14,6 @@ public class EditorChatString extends IChatEditor<String> {
 
 
 
-    private static GuiCommandManager command = SDIPlugin.instance.getManager(GuiCommandManager.class);
 
     private String pointer;
 

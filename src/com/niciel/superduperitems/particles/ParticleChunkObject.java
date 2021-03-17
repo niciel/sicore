@@ -56,7 +56,7 @@ public class ParticleChunkObject implements IChunkObject , IChunkTicking {
     public JsonObject serialize() {
         JsonArray array = new JsonArray();
         for (ParticleData d : particles)
-            array.add(GsonManager.toJsonTree(d ));
+            array.add(GsonManager.getInstance().toJson(d));
         JsonObject o = new JsonObject();
         o.addProperty("class" , ParticleChunkObject.class.getName());
         o.addProperty("uuid" , uuid.toString());

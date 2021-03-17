@@ -298,6 +298,8 @@ public class SpigotUtils {
         StringBuilder sb = new StringBuilder();
         for (int i = starting ; i < args.length ; i++) {
             sb.append(args[i]);
+            if (i+1 < args.length)
+                sb.append(" ");
         }
         return sb.toString();
     }

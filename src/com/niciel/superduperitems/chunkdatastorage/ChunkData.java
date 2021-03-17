@@ -163,7 +163,7 @@ public class ChunkData implements GsonSerializable {
         o.addProperty("y" , position.y);
         JsonArray array = new JsonArray();
         for (IChunkObject cd : objects) {
-            array.add(GsonManager.toJsonTree(cd));
+            array.add(GsonManager.getInstance().toJson(cd));
         }
         o.add("objects" , array);
         return o;

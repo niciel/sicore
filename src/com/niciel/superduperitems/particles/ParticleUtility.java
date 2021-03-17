@@ -2,6 +2,7 @@ package com.niciel.superduperitems.particles;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.gsonadapter.GsonSerializable;
 import com.niciel.superduperitems.SDIPlugin;
@@ -175,7 +176,8 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
             StringBuilder sb = new StringBuilder();
             r.lines().forEach(c->sb.append(c));
 
-            array = GsonManager.fromJson(sb.toString(),JsonArray.class);
+            array = new JsonParser().parse(sb.toString()).getAsJsonArray();
+            //array = GsonManager.getInstance().fromJson(sb.toString(),JsonArray.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
@@ -184,7 +186,8 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
         particles.clear();
         array.forEach( a -> {
             JsonObject o = a.getAsJsonObject();
-            particles.put(o.get("name").getAsString() , (ParticleData) GsonManager.fromJson(o.get("particle").getAsJsonObject() ,  GsonSerializable.class));
+
+            particles.put(o.get("name").getAsString() , (ParticleData) GsonManager.getInstance().fromJson(o.get("particle").getAsJsonObject() ,  GsonSerializable.class));
         });
     }
 
@@ -195,12 +198,12 @@ public class ParticleUtility implements CommandExecutor , IManager , Listener {
             for (Map.Entry<String , ParticleData> e : particles.entrySet()) {
                 o = new JsonObject();
                 o.addProperty("name" , e.getKey());
-                o.add("particle" , GsonManager.toJsonTree(e.getValue() , GsonSerializable.class));
+                o.add("particle" , GsonManager.getInstance().toJson(e.getValue()));
                 array.add(o);
             }
             try {
                 FileWriter writer = new FileWriter(datafile);
-                writer.write(GsonManager.toJson(array));
+                writer.write(GsonManager.getInstance().toJson(array).toString());
                 writer.flush();
                 writer.close();
             } catch (IOException e) {

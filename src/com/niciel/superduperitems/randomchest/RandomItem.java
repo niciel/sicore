@@ -1,5 +1,6 @@
 package com.niciel.superduperitems.randomchest;
 
+import com.google.gson.JsonObject;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.customitems.CustomItem;
 import com.niciel.superduperitems.customitems.ItemManager;
@@ -54,5 +55,15 @@ public class RandomItem implements GsonSerializable , IRandomBlock{
         else {
             is.setAmount(min + random.nextInt((max-min)));
         }
+    }
+
+    @Override
+    public JsonObject serialize() {
+        return null;
+    }
+
+    @Override
+    public void deserialize(JsonObject o) {
+
     }
 }

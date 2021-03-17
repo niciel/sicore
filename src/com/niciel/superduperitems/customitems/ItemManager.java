@@ -2,6 +2,7 @@ package com.niciel.superduperitems.customitems;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.niciel.superduperitems.gsonadapter.GsonItemComponent;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.SDIPlugin;
@@ -74,9 +75,8 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
     private ArrayList<CommandPointer> commandPointers;
     private CommandPointer pointerEditItem;
     private CommandPointer pointerRemoveItem;
-
-
     private ArrayList<ChatCommandEditor<ItemCategory>> categoryEditors;
+
 
     public ItemManager() {
 //        customItems = new HashMap<>();
@@ -421,19 +421,19 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
 
         JsonArray array = new JsonArray();
         for (CustomItem i : items) {
-            array.add(GsonManager.toJsonTree(i , CustomItem.class));
+            array.add(GsonManager.getInstance().toJson(i));
         }
         o.add("items" , array);
         array = new JsonArray();
         for (ItemCategory c : nameToCategory.values())  {
-            array.add(GsonManager.toJsonTree(c));
+            array.add(GsonManager.getInstance().toJson(c));
         }
         o.add("categorys" , array);
 
         File f = new File(dataFile , "save.sev");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(f));
-            writer.write(GsonManager.toJson(o));
+            writer.write(GsonManager.getInstance().toJson(o).toString());
             writer.flush();
             writer.close();
         } catch (FileNotFoundException ex) {
@@ -451,13 +451,13 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
             BufferedReader reader = new BufferedReader(new FileReader(f));
             StringBuilder sb = new StringBuilder();
             reader.lines().forEach(c -> sb.append(c));
-            JsonObject o  = GsonManager.fromJson(sb.toString() , JsonObject.class);
+            JsonObject o = new JsonParser().parse(sb.toString()).getAsJsonObject();
             JsonArray array = o.get("categorys").getAsJsonArray();
             array.forEach( j -> {
-                addCategory(GsonManager.fromJson(j , ItemCategory.class));
+                addCategory((ItemCategory) GsonManager.getInstance().fromJson(j.getAsJsonObject()));
             });
             array = o.get("items").getAsJsonArray();
-            array.forEach(c -> addItem(GsonManager.fromJson(c , CustomItem.class)));
+            array.forEach(c -> addItem((CustomItem) GsonManager.getInstance().fromJson(c.getAsJsonObject())));
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();

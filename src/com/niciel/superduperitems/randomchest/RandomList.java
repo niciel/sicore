@@ -26,7 +26,7 @@ public class RandomList implements IRandomBlock {
         JsonObject o = new JsonObject();
         JsonArray array = new JsonArray();
         for (IRandomBlock r : randoms)
-            array.add(GsonManager.toJsonTree(r));
+            array.add(GsonManager.getInstance().toJson(r));
         o.add("list" , array);
         return o;
     }
@@ -35,6 +35,6 @@ public class RandomList implements IRandomBlock {
     public void deserialize(JsonObject o) {
         JsonArray a = o.get("list").getAsJsonArray();
         this.randoms = new ArrayList<>();
-        a.forEach( c -> this.randoms.add(GsonManager.fromJson(c , IRandomBlock.class)));
+        a.forEach( c -> this.randoms.add( (IRandomBlock) GsonManager.getInstance().fromJson(c.getAsJsonObject())));
     }
 }

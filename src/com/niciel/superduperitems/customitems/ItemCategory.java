@@ -1,5 +1,6 @@
 package com.niciel.superduperitems.customitems;
 
+import com.google.gson.JsonObject;
 import com.niciel.superduperitems.gsonadapter.GsonSerializable;
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
@@ -18,4 +19,13 @@ public class ItemCategory implements GsonSerializable {
     @ChatEditable(name = "displayItem")
     public ItemStack represent = new ItemBuilder(Material.STONE_AXE).setName("test").addLoreLine("lore").get();
 
+    @Override
+    public JsonObject serialize() {
+        return null;
+    }
+
+    @Override
+    public void deserialize(JsonObject o) {
+
+    }
 }

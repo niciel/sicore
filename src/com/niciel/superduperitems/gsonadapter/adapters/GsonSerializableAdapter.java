@@ -8,6 +8,8 @@ import java.lang.reflect.Type;
 public class GsonSerializableAdapter implements JsonSerializer<GsonSerializable> , JsonDeserializer<GsonSerializable> {
 
 
+
+
     @Override
     public GsonSerializable deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject o = jsonElement.getAsJsonObject();

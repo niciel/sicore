@@ -35,8 +35,8 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
      */
     private final GuiMultiCommand multicommand;
     private final GuiMultiCommand editorCommands;
-    private final CommandPointer playerPointer;
-    private final CommandPointer editorCpointer;
+    private CommandPointer playerPointer;
+    private CommandPointer editorCpointer;
 
     public ChatCommandEditor(Player p, T toEdit) {
         this.p = p;
@@ -160,6 +160,10 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         stack.peek().onDeselect();
         if (exitCode != null)
             exitCode.accept(result , this);
+        guimanager.remove(this.playerPointer);
+        guimanager.remove(this.editorCpointer);
+        this.playerPointer = null;
+        this.editorCpointer = null;
     }
 
 

@@ -157,7 +157,7 @@ public class ChunkWorldManager  {
                     return  true;
                 }
                 String out = result.getString("data");
-                ChunkData data = (ChunkData) SDIPlugin.instance.getGson().fromJson(out , GsonSerializable.class);
+                ChunkData data = (ChunkData) SDIPlugin.instance.getGson().fromJson(out);
                 a.getData().data = data;
                 statement.close();
                 result.close();
@@ -191,7 +191,7 @@ public class ChunkWorldManager  {
         };
 
         saveFunction = a-> {
-            String o = GsonManager.toJson(a.getData().data);
+            String o = GsonManager.getInstance().toJson(a.getData().data).toString();
             try {
                 PreparedStatement ps = getConnection().prepareStatement("UPDATE worlddata SET " +
                         "data = ? WHERE vector = ?");
@@ -253,7 +253,7 @@ public class ChunkWorldManager  {
             List<ChunkData> list = new ArrayList<>();
             while (set.next()) {
                 data = set.getString("data");
-                d = GsonManager.fromJson(data , ChunkData.class);
+                d = (ChunkData) GsonManager.getInstance().fromJson(data );
                 list.add(d);
             }
             Vector2int wypizdowieWIELKIE = new Vector2int(Integer.MIN_VALUE , Integer.MIN_VALUE);
@@ -371,7 +371,7 @@ public class ChunkWorldManager  {
                 ResultSet res = st.executeQuery();
                 if (res.next()) {
                     String object = res.getString("data");
-                    c = (ChunkData) SDIPlugin.instance.getGson().fromJson(object , GsonSerializable.class);
+                    c = (ChunkData) SDIPlugin.instance.getGson().fromJson(object);
                     res.close();
                     st.close();
                 }
@@ -380,7 +380,7 @@ public class ChunkWorldManager  {
                     querry = "INSERT INTO worlddata (vector , data) VALUES(?,?);";
                     st = getConnection().prepareStatement(querry);
                     st.setBigDecimal(1  , new BigDecimal(convert(v)));
-                    st.setString(2 , GsonManager.toJson(c));
+                    st.setString(2 , GsonManager.getInstance().toJson(c).toString());
                     st.execute();
                     st.close();
 
