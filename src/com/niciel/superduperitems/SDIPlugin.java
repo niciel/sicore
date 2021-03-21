@@ -18,6 +18,8 @@ import com.niciel.superduperitems.gsonadapter.adapters.GsonUUIDAdapter;
 import com.niciel.superduperitems.inGameEditor.ChatEditorManager;
 import com.niciel.superduperitems.inventory.InventoryManager;
 import com.niciel.superduperitems.managers.SiJavaPlugin;
+import com.niciel.superduperitems.particles.ParticleData;
+import com.niciel.superduperitems.particles.ParticleDataRedstoneDust;
 import com.niciel.superduperitems.particles.ParticleUtility;
 import com.niciel.superduperitems.persistentHelper.PersistentSerializerManager;
 import org.bukkit.Bukkit;
@@ -89,6 +91,10 @@ public class SDIPlugin extends SiJavaPlugin implements Listener , CommandExecuto
         getServer().getPluginManager().registerEvents(this , this);
 
         Bukkit.getScheduler().runTaskTimer(this , r-> tick++ , 1l ,1l);
+
+
+        editorManager.register(ParticleData.class);
+        editorManager.register(ParticleDataRedstoneDust.class);
     }
 
 

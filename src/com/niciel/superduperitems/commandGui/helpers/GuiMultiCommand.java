@@ -82,7 +82,6 @@ public class GuiMultiCommand implements GuiCommandArgs, IGuiTabCompliter, IGuiCo
 
     @Override
     public List<String> onTabComplite(Player sender, String[] args, int deep) {
-        System.out.println("onTabk");
         if (args.length > deep) {
             IGuiTabCompliter a = tabCompiter.get((args[deep]));
             if (a != null) {

@@ -142,7 +142,6 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         else {
             getPlayer().spigot().sendMessage(quitWithoutSave);
         }
-
     }
 
     @Override
@@ -153,30 +152,23 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
 
     @Override
     public void disable(EditorResult result) {
-        disabled = true;
-        editorManager.removePlayerFromEditorMap(getPlayer());
         if (disabled)
             return;
+        disabled = true;
         stack.peek().onDeselect();
-        if (exitCode != null)
-            exitCode.accept(result , this);
         guimanager.remove(this.playerPointer);
         guimanager.remove(this.editorCpointer);
         this.playerPointer = null;
         this.editorCpointer = null;
+        editorManager.removePlayerFromEditorMap(getPlayer());
+        if (this.exitCode != null){
+            this.exitCode.accept(result , this);
+        }
     }
-
-
 
     @Override
     public void setExitConsumer(BiConsumer endResult) {
-        if (exitCode != null)
+        if (exitCode == null)
             exitCode = endResult;
     }
-
-        /*
-HACK
-    */
-
-
 }

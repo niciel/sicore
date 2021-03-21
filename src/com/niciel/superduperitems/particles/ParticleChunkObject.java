@@ -23,6 +23,8 @@ public class ParticleChunkObject implements IChunkObject , IChunkTicking {
 
     int tick=0;
 
+    int timer;
+
     public ParticleChunkObject() {
         uuid = UUID.randomUUID();
         particles = new ArrayList<>();
@@ -41,7 +43,7 @@ public class ParticleChunkObject implements IChunkObject , IChunkTicking {
     @Override
     public void onTick() {
         for (ParticleData d : particles) {
-            if (tick%d.timer==0)
+            if (tick%timer==0)
                 players.forEach(p ->d.send(p));
         }
         tick++;

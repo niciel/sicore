@@ -53,7 +53,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
         Class c = o.getClass();
         while (c.getName().equals(Object.class.getName()) == false) {
             generate(c);
-            System.out.println("generated " + c.getName());
+            //System.out.println("generated " + c.getName());
             c = c.getSuperclass();
         }
     }
@@ -140,11 +140,11 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
                     else {
                         p.sendMessage("znaleziono proba zrobienia ");
                         createInstance(d);
+                        menu.getTreeRoot().sendMenu();
                     }
                 }
             });
         }
-
         selected = true;
     }
 
@@ -178,8 +178,8 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
             }
         }
         enabledEditors = false;
-        if (getReference().getValue() instanceof IObjectSelfEditable)
-            ((IObjectSelfEditable) getReference().getValue()).onDisableEditor(this);
+        //if (getReference().getValue() instanceof IObjectSelfEditable)
+        //    ((IObjectSelfEditable) getReference().getValue()).onDisableEditor(this);
     }
 
     private NewInstanceData find(String name) {
@@ -202,19 +202,24 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
 
     private void createInstance(NewInstanceData d) {
         if (selected) {
-            if (enabledEditors = false) {
-                T obj;
-                Class clazz = null;
-                try {
-                    clazz = Class.forName(d.Clazz);
-                    obj = (T) clazz.newInstance();
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    e.printStackTrace();
-                    return;
-                }
-                generate(obj);
-                getReference().setValue(obj);
+            if (enabledEditors) {
+                disableFieldEditors();
             }
+            T obj;
+            Class clazz = null;
+            try {
+                clazz = Class.forName(d.Clazz);
+                obj = (T) clazz.newInstance();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                return;
+            }
+            getReference().setValue(obj);
+            generate(obj);
+            enableFieldEditors();
+            if (obj instanceof IObjectSelfEditable)
+                ((IObjectSelfEditable) obj).onEnableEditor(this);
+            getReference().setValue(obj);
         }
     }
 
@@ -273,8 +278,6 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
             tc.addExtra(in);
             p.spigot().sendMessage(tc);
         }
-
-
     }
 
     private class InheredClasses {

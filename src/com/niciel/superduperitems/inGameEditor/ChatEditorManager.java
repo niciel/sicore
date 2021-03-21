@@ -8,10 +8,15 @@ import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
+import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatVector;
 import com.niciel.superduperitems.inGameEditor.editors.object.EnumEditor;
 import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.Dual;
 import com.niciel.superduperitems.managers.IManager;
+import com.niciel.superduperitems.utils.Ref;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,10 +24,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.util.Vector;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -64,8 +68,20 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         addSupplier(double.class , new PrimitiveSuppiler(EditorChatDouble.class));
         addSupplier(Float.class , new PrimitiveSuppiler(EditorChatFloat.class));
         addSupplier(float.class , new PrimitiveSuppiler(EditorChatFloat.class));
-        //addSupplier(Vector.class , new PrimitiveSuppiler(EditorChatVector.class));
+        addSupplier(Vector.class , (e, s) -> {
+            return new EditorChatVector(e , "nazwa" , "opis" , EditorChatVector.class);
+        });
+
         //addSupplier(ArmorStandModel.class , new PrimitiveSuppiler(String.class));
+
+
+
+        GsonManager m = IManager.getManager(GsonManager.class);
+        m.registerSimpleSerializer(TestEditor.class);
+        m.registerSimpleSerializer(TestExtends.class);
+        register(TestEditor.class);
+        register(TestExtends.class);
+
     }
 
 
@@ -87,7 +103,7 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         }
     }
 
-
+    private String world = "testN";
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender.isOp()== false)
@@ -96,35 +112,46 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
             commandSender.sendMessage("liczba otwartych edytorow: " +editors.size());
 //            TODO
         }
-        else {
-            commandSender.sendMessage("zapisuje");
-            TestExtends t = new TestExtends();
-            File toSave = new File(SDIPlugin.instance.getDataFolder() , "test.yml");
+        File toSave = new File(SDIPlugin.instance.getDataFolder() , "test.yml");
+        Object o = null;
+        TestExtends t = new TestExtends();
+        if (strings.length >= 2){
             try {
-                FileWriter w = new FileWriter(toSave);
-                w.write(GsonManager.getInstance().toJson(t).toString());
-                w.flush();
-                w.close();
+                FileReader reader = new FileReader(toSave);
+                BufferedReader r = new BufferedReader(reader);
+                final StringBuilder sb = new StringBuilder();
+                String st = r.readLine();
+                int iteration = 0;
+                while (st != null) {
+                    sb.append(st);
+                    st = r.readLine();
+                }
+                r.close();
+                reader.close();
+                o = GsonManager.getInstance().fromJson(sb.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            commandSender.sendMessage("zapisano teraz wczytam");
-            
-            /*
+            t = (TestExtends) o;
             IBaseObjectEditor<TestEditor> editor = this.createChatCommandEditor((Player) commandSender , t);
             editor.setExitConsumer((reson,ed) -> {
+                System.out.println("exitcode " + reson);
                 if (reson.applayChanges()) {
-                    ed.getPlayer().sendMessage("hahaha");
+                    try {
+                        FileWriter w = new FileWriter(toSave);
+                        w.write(GsonManager.getInstance().toJson(ed.getReference().getValue()).toString());
+                        w.flush();
+                        w.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     SDIPlugin.instance.logInfo("jest mi bardzo smutno ale " + ed.getPlayer().getDisplayName() + " wyszedl z edytora :(, no i z serwera przy okazji");
                 }
             });
             editor.sendMenu();
-
-             */
         }
-
         return true;
     }
 
@@ -141,7 +168,6 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         public UUID owner;
         public boolean allowMultipleEditors;
         public List<ChatCommandEditor> extraEditors;
-
     }
 
     /**
@@ -157,29 +183,34 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
             c = c.getSuperclass();
         }
     }
-
+    
     private void registerIfNotExists(NewInstanceData base , Class in[]) {
         for (Class clazz : in) {
             registerIfNotExists(base , clazz);
         }
     }
 
-    private boolean containsInClassesParentsCollection(String clazz , Collection<NewInstanceData> data) {
-        return data.stream().filter( p-> p.Clazz.equals(clazz)).findFirst().isPresent();
-    }
-
     private void registerIfNotExists(NewInstanceData base, Class in) {
-        List<NewInstanceData> set = classParents.get(in);
+        List<NewInstanceData> set = classParents.get(in.getName());
         if (set == null) {
             set = new ArrayList<>();
             set.add(base);
             classParents.put(in.getName() , set);
         }
         else {
-            if (containsInClassesParentsCollection(base.Clazz , set) == false)
+            if (containsInClassesParentsCollection(base.Clazz , set) == false) {
                 set.add(base);
+            }
         }
     }
+
+
+
+    private boolean containsInClassesParentsCollection(String clazz , Collection<NewInstanceData> data) {
+        return data.stream().filter( p-> p.Clazz.contentEquals(clazz)).findFirst().isPresent();
+    }
+
+
 
     public List<NewInstanceData> getAllSubClasses(Class clazz) {
         String n = clazz.getName();

@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.utils;
+package com.niciel.superduperitems.utils.scheduler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +38,7 @@ public abstract class AsyncCallBack<T> implements Runnable {
     public JavaPlugin getOwner() {
         return owner.get();
     }
+
 
     public boolean isSuccess() {
         return success;

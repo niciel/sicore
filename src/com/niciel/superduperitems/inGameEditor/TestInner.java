@@ -3,7 +3,6 @@ package com.niciel.superduperitems.inGameEditor;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
-import com.niciel.superduperitems.inGameEditor.editors.object.IObjectSelfEditable;
 import org.bukkit.entity.Player;
 
 

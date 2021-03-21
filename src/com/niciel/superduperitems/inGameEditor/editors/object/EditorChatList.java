@@ -24,6 +24,7 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
     private Ref<List> reference;
     private Collection<NewInstanceData> classes;
 
+
     private String selectToEditCommand;
 
     private boolean generated = false;

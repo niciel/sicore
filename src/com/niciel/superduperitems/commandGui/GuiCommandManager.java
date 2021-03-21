@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 
+import javax.annotation.Nonnull;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -161,9 +162,10 @@ public class GuiCommandManager implements IManager , CommandExecutor , Listener 
         return command;
     }
 
-    public void remove(CommandPointer pointer) {
-        this.remove(pointer);
-        stringIDtoPointer.remove(pointer.stringID);
+    public void remove(@Nonnull  CommandPointer pointer) {
+        if (stringIDtoPointer.remove(pointer.stringID) != null) {
+            usedIDS.remove(pointer.stringID);
+        }
     }
 
 

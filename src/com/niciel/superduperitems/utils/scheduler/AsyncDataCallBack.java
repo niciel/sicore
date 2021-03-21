@@ -1,4 +1,4 @@
-package com.niciel.superduperitems.utils;
+package com.niciel.superduperitems.utils.scheduler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;

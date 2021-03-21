@@ -60,4 +60,9 @@ public class EditorChatString extends IChatEditor<String> {
         tc.addExtra(" wartosc: " + getReference().getValue());
         p.spigot().sendMessage(tc);
     }
+
+
+    public String getCommandPointer() {
+        return this.pointer;
+    }
 }
