@@ -22,12 +22,6 @@ public class SiJavaPlugin extends JavaPlugin {
     private ArrayList<MethodHandle> managersHandles;
     private ArrayList<String> managersTypes;
 
-    protected void onLateEnable() {
-        forEachManagers(c -> {
-            c.onLateEnable();
-        });
-        onPluginLateEnable();
-    }
 
     @Override
     public void onLoad() {
@@ -67,17 +61,15 @@ public class SiJavaPlugin extends JavaPlugin {
         return null;
     }
     
-    protected void forEachManagers(Consumer<IManager> c) {
+    public void forEachManagers(Consumer<IManager> c) {
         IManager m = null;
 
         for(MethodHandle h : managersHandles) {
             try {
                 m = (IManager) h.invoke(this);
-
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
-
             if (m == null)
                 continue;
             c.accept(m);

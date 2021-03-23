@@ -3,6 +3,7 @@ package com.niciel.superduperitems.managers;
 import com.niciel.superduperitems.utils.Dual;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.function.Consumer;
 public final class ManagersHandle {
 
 
-    private static List<SiJavaPlugin> list;
+    private static List<SiJavaPlugin> list = new ArrayList<>();
 
 
     public static <T extends  IManager> IManager getManager(Class<T> clazz) {
@@ -30,9 +31,11 @@ public final class ManagersHandle {
         list.add(plugin);
     }
 
-    public static void forEach(Consumer<IManager> mag) {
+
+
+    public static void forEachPlugin(Consumer<SiJavaPlugin> plugin) {
         for (SiJavaPlugin p : list) {
-            p.forEachManagers(mag);
+            plugin.accept(p);
         }
     }
 

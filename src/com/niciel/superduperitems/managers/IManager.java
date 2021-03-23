@@ -16,7 +16,7 @@ public interface IManager  {
      */
     default void onLateEnable(){}
 
-    default JavaPlugin getPlugin() {
+    default SiJavaPlugin getPlugin() {
         return SDIPlugin.instance;
     }
 

@@ -20,7 +20,6 @@ public final class GsonManager implements IManager {
 
     public final  String pathToClassName = "-=-type-=-";
 
-    //protected  HashSet<String> registeredGsonProvider = new HashSet<>();
 
 
     public GsonManager(GsonBuilder builder) {

@@ -98,17 +98,20 @@ public final class SDIPlugin extends SiJavaPlugin implements Listener , CommandE
         editorManager.register(ParticleDataRedstoneDust.class);
 
 
-        Bukkit.getScheduler().runTask(this, ()->{
-            ManagersHandle.forEach(c -> {
-                c.onLateEnable();
+        Bukkit.getScheduler().runTaskLater(this, ()->{
+
+            ManagersHandle.forEachPlugin(p -> {
+                p.onPluginLateEnable();
+                p.forEachManagers(m -> m.onLateEnable());
             });
-        });
+        },1l);
 
     }
 
 
     @Override
     public void onPluginLateEnable() {
+        gson.build(null);
         super.onPluginLateEnable();
     }
 
@@ -123,10 +126,6 @@ public final class SDIPlugin extends SiJavaPlugin implements Listener , CommandE
 
 
 
-    protected void onLateEnable() {
-        gson.build(null);
-        super.onLateEnable();
-    }
 
     public GsonManager getGson() {
         return gson;
