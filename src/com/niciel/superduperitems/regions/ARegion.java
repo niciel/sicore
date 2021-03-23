@@ -4,28 +4,18 @@ import com.google.gson.JsonObject;
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 
+import java.util.UUID;
+
 public abstract class ARegion implements IRegion {
 
 
     @GsonSimpleSerialize
     @ChatEditable
-    private String id;
-
-
-    @Override
-    public String getID() {
-        return id;
-    }
+    private UUID uuid;
 
     @Override
-    public JsonObject serialize() {
-        JsonObject o = new JsonObject();
-        o.addProperty("id" , id);
-        return o;
+    public UUID getID() {
+        return uuid;
     }
 
-    @Override
-    public void deserialize(JsonObject o) {
-        id = o.get("id").getAsString();
-    }
 }

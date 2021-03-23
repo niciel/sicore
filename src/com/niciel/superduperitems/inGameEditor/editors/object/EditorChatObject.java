@@ -40,6 +40,8 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     private String editCommand;
 
 
+    private boolean isFieldCallBackEnabled = false;
+
     public EditorChatObject(IBaseObjectEditor owner,String name, String description, Class baseType ) {
         super(owner, name, description, baseType);
         this.manager = IManager.getManager(ChatEditorManager.class);
@@ -51,6 +53,10 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
             disableFieldEditors();
         menuTree.clear();
         Class c = o.getClass();
+        if (o instanceof IFieldUpdateCallBack)
+            isFieldCallBackEnabled = true;
+        else
+            isFieldCallBackEnabled = false;
         while (c.getName().equals(Object.class.getName()) == false) {
             generate(c);
             //System.out.println("generated " + c.getName());
@@ -83,6 +89,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
         inh.fields = data;
         menuTree.add(inh);
         for (Field f : clazz.getDeclaredFields()) {
+            String fieldName = f.getName();
             editable = f.getAnnotation(ChatEditable.class);
             if (editable == null || editable.excludeInEdit())
                 continue;
@@ -104,6 +111,9 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
                     try {
                         handle.invoke(ownerEditor.get().getReference().getValue() , ((Ref)c).getValue());
                         ownerEditor.get().getTreeRoot().sendMenu();
+                        if (ownerEditor.get().isFieldCallBackEnabled) {
+                            ((IFieldUpdateCallBack) ownerEditor.get()).validate(fieldName);
+                        }
                     } catch (Throwable throwable) {
                         throwable.printStackTrace();
                     }

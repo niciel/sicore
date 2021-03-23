@@ -166,9 +166,13 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         }
     }
 
+
     @Override
-    public void setExitConsumer(BiConsumer endResult) {
+    public void setExitConsumer(BiConsumer c) {
         if (exitCode == null)
-            exitCode = endResult;
+            exitCode = exitCode;
     }
+
+
+
 }

@@ -3,7 +3,6 @@ package com.niciel.superduperitems.managers;
 import com.niciel.superduperitems.utils.SimpleCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,8 +20,7 @@ import java.util.logging.Level;
 public class SiJavaPlugin extends JavaPlugin {
 
     private ArrayList<MethodHandle> managersHandles;
-
-
+    private ArrayList<String> managersTypes;
 
     protected void onLateEnable() {
         forEachManagers(c -> {
@@ -33,9 +31,10 @@ public class SiJavaPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-
         managersHandles = new ArrayList<MethodHandle>();
+        managersTypes = new ArrayList<>();
         MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle handle;
         for (Field f : this.getClass().getDeclaredFields()) {
 
             if (IManager.class.isAssignableFrom(f.getType())) {
@@ -43,29 +42,32 @@ public class SiJavaPlugin extends JavaPlugin {
                     f.setAccessible(true);
 
                 try {
-                    managersHandles.add(lookup.unreflectGetter(f));
+                    handle = lookup.unreflectGetter(f);
+                    managersHandles.add(handle);
+                    managersTypes.add(f.getType().getName());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
+        ManagersHandle.register(this);
     }
 
-
-    
     public <T extends IManager> T getManager(Class<T> clazz) {
-        AtomicReference<IManager> m = new AtomicReference<>();
-        forEachManagersIfPass(c-> {
-            if (c.getClass().getName().contentEquals(clazz.getName())) {
-                m.set(c);
-                return false;
+        String name = clazz.getName();
+        for(int i = 0 ; i< managersHandles.size() ;i++) {
+            if (managersTypes.get(i).contentEquals(name)) {
+                try {
+                    return (T) managersHandles.get(i).invoke(this);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
-            return true;
-        });
-        return (T) m.get();
+        }
+        return null;
     }
     
-    private void forEachManagers(Consumer<IManager> c) {
+    protected void forEachManagers(Consumer<IManager> c) {
         IManager m = null;
 
         for(MethodHandle h : managersHandles) {
@@ -79,21 +81,6 @@ public class SiJavaPlugin extends JavaPlugin {
             if (m == null)
                 continue;
             c.accept(m);
-        }
-    }
-    private void forEachManagersIfPass(Predicate<IManager> c) {
-        IManager m =null;
-        for(MethodHandle h : managersHandles) {
-            try {
-                m = (IManager) h.invoke(this);
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-            if (m == null)
-                continue;
-            if (c.test(m))
-                continue;
-            break;
         }
     }
 
@@ -118,12 +105,7 @@ public class SiJavaPlugin extends JavaPlugin {
             logInfo("zarejestrowano manager: " + c.getClass().getName());
         });
 
-        Bukkit.getScheduler().runTask(this, new Runnable() {
-            @Override
-            public void run() {
-                onLateEnable();
-            }
-        });
+
     }
 
     public void logWarning(Object obj ,String msg) {

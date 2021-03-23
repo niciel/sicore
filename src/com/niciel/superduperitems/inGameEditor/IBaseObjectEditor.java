@@ -18,10 +18,10 @@ public interface IBaseObjectEditor<T> {
 
     Player getPlayer();
 
-    public void setExitConsumer(BiConsumer<EditorResult , IBaseObjectEditor> endResult);
-
     public void disable(EditorResult res);
 
     Ref getReference() ;
+
+    void setExitConsumer(BiConsumer<EditorResult,IBaseObjectEditor> c);
 
 }

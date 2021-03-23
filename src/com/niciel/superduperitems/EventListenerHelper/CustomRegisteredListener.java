@@ -20,12 +20,6 @@ public class CustomRegisteredListener<T extends Event> extends RegisteredListene
     private HandlerList handlers;
     private boolean removed = true;
 
-
-    private CustomRegisteredListener(Listener listener, EventExecutor executor, EventPriority priority, Plugin plugin, boolean ignoreCancelled) {
-        super(listener, executor, priority, plugin, ignoreCancelled);
-    }
-
-
     /**
      *
      * @param plugin owner

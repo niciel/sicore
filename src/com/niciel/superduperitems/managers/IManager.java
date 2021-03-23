@@ -2,6 +2,8 @@ package com.niciel.superduperitems.managers;
 
 import com.niciel.superduperitems.SDIPlugin;
 
+import org.bukkit.plugin.java.JavaPlugin;
+
 public interface IManager  {
 
 
@@ -14,8 +16,7 @@ public interface IManager  {
      */
     default void onLateEnable(){}
 
-
-    default SDIPlugin getPlugin() {
+    default JavaPlugin getPlugin() {
         return SDIPlugin.instance;
     }
 
@@ -25,11 +26,10 @@ public interface IManager  {
      * @param <T>
      * @return
      */
+
+
     static <T extends IManager> T getManager(Class<T> manager)  {
-        SDIPlugin pl = SDIPlugin.instance;
-        if (pl ==null)
-            return null;
-        return pl.getManager(manager);
+        return (T) ManagersHandle.getManager(manager);
     }
 
 }
