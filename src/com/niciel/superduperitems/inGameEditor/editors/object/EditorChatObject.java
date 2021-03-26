@@ -246,8 +246,11 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     }
 
 
+    private static int id = 0;
+
     @Override
     public void sendItem(Player p) {
+        id++;
         if (selected) {
             if (getReference().getValue() != null) {
                 TextComponent tc;

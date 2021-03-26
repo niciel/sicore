@@ -154,6 +154,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
     public void disable(EditorResult result) {
         if (disabled)
             return;
+
         disabled = true;
         stack.peek().onDeselect();
         guimanager.remove(this.playerPointer);
@@ -170,7 +171,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
     @Override
     public void setExitConsumer(BiConsumer c) {
         if (exitCode == null)
-            exitCode = exitCode;
+            exitCode = c;
     }
 
 

@@ -8,6 +8,7 @@ import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
 import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.IBaseObjectEditor;
 import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
+import com.niciel.superduperitems.utils.IRefSilent;
 import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -177,7 +178,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     @Override
     public void sendItem(Player p) {
         if (getReference().getValue() == null) {
-            getReference().setValue(new Vector(0,0,0));
+            ((IRefSilent) getReference()).setSilently(new Vector(0,0,0));
         }
         if (selected == false) {
             TextComponent tc = new TextComponent("[vector] " + formatDecimalVector() + " ");

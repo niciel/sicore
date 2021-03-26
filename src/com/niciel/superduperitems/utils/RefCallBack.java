@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RefCallBack<T> extends Ref<T> {
+public class RefCallBack<T> extends Ref<T> implements IRefSilent<T> {
 
     private List<Consumer<RefCallBack<T>>> callBack = new ArrayList<>();
 
@@ -23,9 +23,14 @@ public class RefCallBack<T> extends Ref<T> {
     }
 
 
+
     public void setValue(T value) {
         super.setValue(value);
         callBack.forEach(c-> c.accept(this));
     }
 
+    @Override
+    public void setSilently(T t) {
+        super.setValue(t);
+    }
 }

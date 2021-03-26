@@ -104,6 +104,8 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
     }
 
     private String world = "testN";
+
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (commandSender.isOp()== false)
