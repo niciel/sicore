@@ -48,7 +48,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         this.editorCommands = new GuiMultiCommand();
         this.playerPointer = guimanager.registerCommandPointer(this.multicommand);
         this.editorCpointer = guimanager.registerCommandPointer(this.editorCommands);
-        IChatEditor t = editorManager.getEditor(this ,toEdit.getClass());
+        IChatEditor t = editorManager.getEditor(this ,toEdit.getClass() , "baza nazwa" , " baza opis");
         if ((t instanceof IChatEditorMenu) == false) {
             disabled = true;
             return;

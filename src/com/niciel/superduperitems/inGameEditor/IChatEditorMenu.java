@@ -12,12 +12,10 @@ public abstract class IChatEditorMenu<T extends Object> extends  IChatEditor<T> 
     private WeakReference<IBaseObjectEditor> owner;
 
 
-    public IChatEditorMenu(IBaseObjectEditor owner ,String name, String description, Class clazz ) {
-        super(name ,description ,clazz);
+    public IChatEditorMenu(IBaseObjectEditor owner ,String name, String description) {
+        super(name ,description );
         this.owner = new WeakReference<>(owner);
     }
-
-
 
     public IBaseObjectEditor getTreeRoot() {
         return owner.get();

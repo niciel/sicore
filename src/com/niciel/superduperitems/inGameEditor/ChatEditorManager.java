@@ -68,8 +68,8 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         addSupplier(double.class , new PrimitiveSuppiler(EditorChatDouble.class));
         addSupplier(Float.class , new PrimitiveSuppiler(EditorChatFloat.class));
         addSupplier(float.class , new PrimitiveSuppiler(EditorChatFloat.class));
-        addSupplier(Vector.class , (e, s) -> {
-            return new EditorChatVector(e , "nazwa" , "opis" , EditorChatVector.class);
+        addSupplier(Vector.class , (e, clazz,name , description) -> {
+            return new EditorChatVector(e ,name , description , EditorChatVector.class);
         });
 
         //addSupplier(ArmorStandModel.class , new PrimitiveSuppiler(String.class));
@@ -229,33 +229,19 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         suppilerss.add(new Dual<>(predict , sup));
     }
 
-    public  IChatEditor getEditor(IBaseObjectEditor editor , Class clazz) {
+    public  IChatEditor getEditor(IBaseObjectEditor editor , Class clazz , String name , String description) {
         Dual<Class , IChatEditorSuppiler> dual = classNameToEditor.get(clazz.getName());
         if (dual != null) {
-            return dual.second.get(editor,clazz);
+            return dual.second.get(editor,clazz,name,description);
         }
         for (Dual<Predicate<Class> , IChatEditorSuppiler> d : suppilerss) {
             if (d.first.test(clazz))
-                return d.second.get(editor,clazz);
+                return d.second.get(editor,clazz,name,description);
         }
 
-
-
-        /* copy paste start*/
-        String name;
-        String description;
-        if (clazz.isAnnotationPresent(ChatObjectName.class)) {
-            name = ((ChatObjectName)clazz.getDeclaredAnnotation(ChatObjectName.class)).name();
-            description = "base";
-        }
-        else {
-            name = clazz.getSimpleName();
-            description = "?base?";
-        }
         if (clazz.isEnum())
-            return new EnumEditor(name,description , clazz);
+            return new EnumEditor(clazz,name,description );
 
-        /* copy paste end*/
         return new EditorChatObject(editor , name,description , clazz );
     }
 

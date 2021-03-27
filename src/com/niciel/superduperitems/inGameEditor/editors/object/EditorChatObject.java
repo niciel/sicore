@@ -43,7 +43,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     private boolean isFieldCallBackEnabled = false;
 
     public EditorChatObject(IBaseObjectEditor owner,String name, String description, Class baseType ) {
-        super(owner, name, description, baseType);
+        super(owner, name, description);
         this.manager = IManager.getManager(ChatEditorManager.class);
         this.menuTree = new ArrayList<>();
     }
@@ -100,7 +100,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
                 name = editable.name();
             RefCallBack ref = new RefCallBack();
             fieldType = f.getType();
-            editor = manager.getEditor(getTreeRoot(),fieldType);
+            editor = manager.getEditor(getTreeRoot(),fieldType , name ,description);
             try {
                 if (! f.isAccessible()) {
                     f.setAccessible(true);

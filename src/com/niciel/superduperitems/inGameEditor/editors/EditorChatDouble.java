@@ -15,8 +15,8 @@ public class EditorChatDouble extends IChatEditor<Double> {
     private String command;
 
 
-    public EditorChatDouble(String name, String description , Class clazz ) {
-        super(name, description, clazz);
+    public EditorChatDouble(String name, String description) {
+        super(name, description);
     }
 
     @Override

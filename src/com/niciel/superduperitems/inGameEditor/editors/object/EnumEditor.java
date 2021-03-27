@@ -22,8 +22,8 @@ public class EnumEditor extends IChatEditor<Object> {
     private Class enumType;
     private String command;
 
-    public EnumEditor(String name, String description, Class clazz) {
-        super(name, description, clazz);
+    public EnumEditor(Class clazz, String name, String description) {
+        super(name, description);
         this.enumType = clazz;
         if (! enumType.isEnum()) {
             ERROR = true;

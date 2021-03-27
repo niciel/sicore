@@ -44,7 +44,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     private static DecimalFormat decimal = new DecimalFormat("####.##");
 
     public EditorChatVector(IBaseObjectEditor owner, String name, String description, Class clazz) {
-        super(owner, name, description, clazz);
+        super(owner, name, description);
     }
 
     @Override

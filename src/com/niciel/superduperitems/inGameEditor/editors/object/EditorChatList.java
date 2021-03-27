@@ -30,8 +30,8 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
     private boolean generated = false;
 
 
-    public EditorChatList(IBaseObjectEditor owner, String name, String description,  Class clazz ) {
-        super(owner, name, description, clazz);
+    public EditorChatList(IBaseObjectEditor owner, String name, String description) {
+        super(owner, name, description);
     }
 
     @Override

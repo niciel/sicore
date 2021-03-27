@@ -15,8 +15,8 @@ public class EditorChatFloat extends IChatEditor<Float> {
     private String pointer;
 
 
-    public EditorChatFloat(String name, String description,  Class clazz ) {
-        super(name, description, clazz);
+    public EditorChatFloat(String name, String description ) {
+        super(name, description);
     }
 
 

@@ -22,8 +22,8 @@ public class EditorChatString extends IChatEditor<String> {
      * @param description
      * @param clazz       class of object or if field ist null field type
      */
-    public EditorChatString(String name, String description, Class clazz) {
-        super(name, description, clazz);
+    public EditorChatString(String name, String description) {
+        super(name, description);
     }
 
 

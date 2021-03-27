@@ -18,9 +18,8 @@ public abstract class IChatEditor<T extends Object> {
      *
      * @param name
      * @param description
-     * @param clazz class of object or if field ist null field type
      */
-    public IChatEditor(String name, String description, Class clazz ) {
+    public IChatEditor(String name, String description) {
         this.name = name;
         this.description = description;
     }

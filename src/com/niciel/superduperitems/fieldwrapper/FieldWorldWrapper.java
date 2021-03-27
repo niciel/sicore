@@ -30,7 +30,7 @@ public class FieldWorldWrapper implements IObjectSelfEditable {
     @Override
     public void onEnableEditor(EditorChatObject editor) {
         System.out.println("enabled");
-        stringEditor = new EditorChatString("worldname" , "nazwaświata" , this.getClass());
+        stringEditor = new EditorChatString("worldname" , "nazwaświata" );
         ref = new RefCallBack<>(worldName);
         ref.addCallBack(c-> {
             this.worldName = c.getValue();

@@ -14,8 +14,8 @@ public class EditorChatInt extends IChatEditor<Integer> {
     private String pointer;
 
 
-    public EditorChatInt(String name, String description,  Class clazz ) {
-        super(name, description, clazz);
+    public EditorChatInt(String name, String description) {
+        super(name, description);
     }
 
 

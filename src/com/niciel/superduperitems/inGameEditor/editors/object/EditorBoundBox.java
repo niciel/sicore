@@ -30,7 +30,7 @@ public class EditorBoundBox extends IChatEditorMenu<BoundingBox> {
     private String toogleShowRangeCommand;
 
     public EditorBoundBox(IBaseObjectEditor owner, String name, String description, Class clazz) {
-        super(owner, name, description, clazz);
+        super(owner, name, description);
     }
 
 
