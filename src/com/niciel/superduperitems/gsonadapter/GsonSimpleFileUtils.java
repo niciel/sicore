@@ -1,5 +1,7 @@
 package com.niciel.superduperitems.gsonadapter;
 
+import com.google.gson.JsonElement;
+
 import java.io.*;
 
 public final class GsonSimpleFileUtils {
@@ -33,6 +35,8 @@ public final class GsonSimpleFileUtils {
                     e.printStackTrace();
                     return null;
                 }
+                if (o == null)
+                    return null;
                 if (toLoad.isAssignableFrom(o.getClass()))
                     return (T) o;
             }
@@ -68,7 +72,8 @@ public final class GsonSimpleFileUtils {
         FileWriter w = null;
         try {
             w = new FileWriter(nf);
-            w.write(GsonManager.getInstance().toJson(o).toString());
+            JsonElement e = GsonManager.getInstance().toJson(o);
+            w.write(e.toString());
             w.flush();
             w.close();
         } catch (IOException e) {

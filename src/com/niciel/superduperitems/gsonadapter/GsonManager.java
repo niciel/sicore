@@ -12,13 +12,13 @@ import java.util.function.Consumer;
 public final class GsonManager implements IManager {
 
     protected  HashMap<String , GsonSimpleSerializer> serializers = new HashMap<>();
-    //private HashSet<String> gsonAdapters = new HashSet<>();
-    protected  Gson gson;
+    private HashSet<String> gsonAdapters = new HashSet<>();
+    private  Gson gson;
     private  GsonBuilder builder;
 
     private static GsonManager instance;
 
-    public final  String pathToClassName = "-=-type-=-";
+    public static final  String pathToClassName = "-=-type-=-";
 
 
 
@@ -29,6 +29,7 @@ public final class GsonManager implements IManager {
     public void build(Consumer<GsonBuilder> cons) {
         if (cons != null)
             cons.accept(builder);
+
         gson = builder.create();
         builder = null;
     }
@@ -39,12 +40,14 @@ public final class GsonManager implements IManager {
     }
 
 
-        /**
-         * automatyczny system wczytania
-         * @param o
-         * @return
-         */
+    /**
+     * automatyczny system wczytania
+     * @param o
+     * @return
+     */
     public  Object fromJson(JsonObject o) {
+        if (o == null)
+            return null;
         if (o.has(pathToClassName)) {
             String clazzName = o.get(pathToClassName).getAsString();
             GsonSimpleSerializer ser = getSerializer(clazzName);
@@ -63,7 +66,14 @@ public final class GsonManager implements IManager {
                 e.printStackTrace();
                 return null;
             }
-            return fromJson(o , clazz);
+            if (gsonAdapters.contains(clazzName))
+                return fromJson(o , clazz);
+            else {
+                ser = getSerializer(clazz);
+                RefCallBack ref = new RefCallBack();
+                ser.deserialize(ref , o);
+                return ref.getValue();
+            }
         }
         return null;
     }
@@ -80,9 +90,21 @@ public final class GsonManager implements IManager {
         return t;
     }
 
+
+
     public GsonSimpleSerializer getSerializer(String clazzName) {
         return serializers.get(clazzName);
     }
+
+    public GsonSimpleSerializer getSerializer(Class clazz) {
+        String clazzName = clazz.getName();
+        if (serializers.containsKey(clazzName))
+            return getSerializer(clazzName);
+        ClassTemple t = new ClassTemple(clazz);
+        serializers.put(clazzName , t);
+        return t;
+    }
+
 
 
     /**
@@ -99,15 +121,19 @@ public final class GsonManager implements IManager {
 
     public  JsonElement toJson(Object o) {
         String clazzName = o.getClass().getName();
-        GsonSimpleSerializer ser = getSerializer(clazzName);
+        if (gsonAdapters.contains(o.getClass().getName())){
+            JsonElement e = gson.toJsonTree(o);
+            if (e.isJsonObject()) {
+                e.getAsJsonObject().addProperty(pathToClassName,clazzName);
+            }
+            return e;
+        }
+
+        GsonSimpleSerializer ser = getSerializer(o.getClass());
         if (ser != null) {
-            return ser.serialize( o);
+            return ser.serialize(o);
         }
-        JsonElement e = gson.toJsonTree(o);
-        if (e.isJsonObject()) {
-            e.getAsJsonObject().addProperty(pathToClassName,clazzName);
-        }
-        return e;
+        return null;
     }
 
     /**
@@ -120,6 +146,7 @@ public final class GsonManager implements IManager {
             return;
         if (object instanceof JsonSerializer || object instanceof JsonDeserializer) {
             builder.registerTypeAdapter(clazz,object);
+            gsonAdapters.add(clazz.getName());
         }
     }
 
