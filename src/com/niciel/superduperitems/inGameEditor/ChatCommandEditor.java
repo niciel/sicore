@@ -13,8 +13,7 @@ import org.bukkit.entity.Player;
 import java.lang.ref.WeakReference;
 import java.util.Stack;
 import java.util.function.BiConsumer;
-
-
+import java.util.function.Consumer;
 
 
 public class ChatCommandEditor<T> implements IBaseObjectEditor {
@@ -28,7 +27,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
     private Stack<IChatEditorMenu> stack;
 
     private BiConsumer<EditorResult , IBaseObjectEditor> exitCode;
-
+    public Consumer<IBaseObjectEditor> sendOnMainPage;
 
     /**
      * komendy wykorzystywane przez edytory, co zmiane edytora komendy sa czyszczone
@@ -140,7 +139,10 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         if (stack.size() > 1)
             getPlayer().spigot().sendMessage(goBack);
         else {
-            getPlayer().spigot().sendMessage(quitWithoutSave);
+            if (sendOnMainPage == null)
+                getPlayer().spigot().sendMessage(quitWithoutSave);
+            else
+                sendOnMainPage.accept(this);
         }
     }
 
@@ -150,21 +152,25 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
     }
 
 
-    @Override
-    public void disable(EditorResult result) {
+    public void disableSilently(EditorResult result,boolean removePlayerFromEdit) {
         if (disabled)
             return;
-
         disabled = true;
         stack.peek().onDeselect();
         guimanager.remove(this.playerPointer);
         guimanager.remove(this.editorCpointer);
         this.playerPointer = null;
         this.editorCpointer = null;
-        editorManager.removePlayerFromEditorMap(getPlayer());
+        if (removePlayerFromEdit)
+            editorManager.removePlayerFromEditorMap(getPlayer());
         if (this.exitCode != null){
             this.exitCode.accept(result , this);
         }
+    }
+
+    @Override
+    public void disable(EditorResult result) {
+        disableSilently(result,true);
     }
 
 

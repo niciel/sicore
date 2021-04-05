@@ -53,11 +53,14 @@ public class EnumEditor extends IChatEditor<Object> {
             }
 
         } );
-
+        int i = 10;
+        if (map.size() < 10)
+            i = map.size();
+        int j = i;
         owner.getTreeRoot().commands().register(command, new IGuiTabCompliter() {
             @Override
             public List<String> onTabComplite(Player sender, String[] args, int deep) {
-                List<String> out = SpigotUtils.findClosest(map.keySet() , args[deep] , 10);
+                List<String> out = SpigotUtils.findClosest(map.keySet() , args[deep] , j);
                 return out;
             }
         });

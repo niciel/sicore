@@ -23,7 +23,6 @@ public class PrimitiveSuppiler implements IChatEditorSuppiler {
 
     @Override
     public IChatEditor get(IBaseObjectEditor editor ,Class clazz,String name , String description) {
-        System.out.println(" suppiled with name " + name);
         try {
             return (IChatEditor) construcotr.invoke(name , description );
         } catch (Throwable throwable) {

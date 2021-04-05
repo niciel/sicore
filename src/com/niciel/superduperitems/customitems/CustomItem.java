@@ -38,6 +38,9 @@ public class CustomItem  {
     public List<ItemComponent> allComponents;
 
 
+
+
+
     private Map<String , List<ItemComponentBox>> eventMapToListOfBoxes;
 
     public CustomItem () {

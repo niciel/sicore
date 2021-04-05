@@ -5,8 +5,10 @@ import com.niciel.superduperitems.managers.IManager;
 import com.niciel.superduperitems.utils.RefCallBack;
 import com.sun.xml.internal.bind.v2.TODO;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.function.Consumer;
 
 public final class GsonManager implements IManager {
@@ -37,6 +39,19 @@ public final class GsonManager implements IManager {
 
     public  Object fromJson(String o) {
         return fromJson(gson.fromJson( o , JsonObject.class));
+    }
+
+    public Object fromFile(File f) {
+        try {
+            Scanner scaner = new Scanner(f);
+            StringBuilder sb = new StringBuilder();
+            while (scaner.hasNext())
+                sb.append(scaner.nextLine());
+            return fromJson(sb.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -119,21 +134,38 @@ public final class GsonManager implements IManager {
     }
 
 
+    public void toFile(File f ,Object o) {
+        try {
+            Writer writer = new FileWriter(f);
+            writer.write(gson.toJson(o).toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public  JsonElement toJson(Object o) {
         String clazzName = o.getClass().getName();
-        if (gsonAdapters.contains(o.getClass().getName())){
-            JsonElement e = gson.toJsonTree(o);
-            if (e.isJsonObject()) {
-                e.getAsJsonObject().addProperty(pathToClassName,clazzName);
+        JsonElement e = null;
+        if (gsonAdapters.contains(clazzName)){
+            try {
+                Class clazz = Class.forName(clazzName);
+                e = gson.toJsonTree(o , clazz);
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
             }
-            return e;
         }
-
-        GsonSimpleSerializer ser = getSerializer(o.getClass());
-        if (ser != null) {
-            return ser.serialize(o);
+        else {
+            GsonSimpleSerializer ser = getSerializer(o.getClass());
+            if (ser != null) {
+                e = ser.serialize(o);
+            }
+            else
+                return null;
         }
-        return null;
+        if (e.isJsonObject()) {
+            e.getAsJsonObject().addProperty(pathToClassName,clazzName);
+        }
+        return e;
     }
 
     /**

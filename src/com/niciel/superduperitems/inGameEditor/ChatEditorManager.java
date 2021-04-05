@@ -7,6 +7,7 @@ import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
+import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatList;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatVector;
 import com.niciel.superduperitems.inGameEditor.editors.object.EnumEditor;
@@ -27,6 +28,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -68,6 +70,12 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         addSupplier(double.class , new PrimitiveSuppiler(EditorChatDouble.class));
         addSupplier(Float.class , new PrimitiveSuppiler(EditorChatFloat.class));
         addSupplier(float.class , new PrimitiveSuppiler(EditorChatFloat.class));
+        addSupplier(List.class , (e,clazz,name,desciption) -> {
+            return new EditorChatList(e,name,desciption);
+        });
+        addSupplier(ArrayList.class , (e,clazz,name,desciption) -> {
+            return new EditorChatList(e,name,desciption);
+        });
         addSupplier(Vector.class , (e, clazz,name , description) -> {
             return new EditorChatVector(e ,name , description , EditorChatVector.class);
         });

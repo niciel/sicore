@@ -15,6 +15,8 @@ public class FieldTemple {
     MethodHandle getter;
     MethodHandle setter;
 
+    Class enumType;
+
     public  enum PrimitiveWrapper {
         INT((e) -> {
             return e.getAsInt();

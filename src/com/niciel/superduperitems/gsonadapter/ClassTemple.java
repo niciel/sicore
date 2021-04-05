@@ -20,13 +20,26 @@ public class ClassTemple implements GsonSimpleSerializer {
     private Class type;
     private GsonManager manager;
 
+
+
+
+
+
     public ClassTemple(Class tyoe) {
         manager = IManager.getManager(GsonManager.class);
         this.type = tyoe;
+        this.fields = new ArrayList<>();
+        while (tyoe.getName().contentEquals(Object.class.getName()) == false) {
+            ulomnageneracja(tyoe);
+            tyoe = tyoe.getSuperclass();
+        }
+    }
+
+
+    protected void ulomnageneracja(Class clazz) {
         MethodHandles.Lookup look = MethodHandles.lookup();
         String path;
         FieldTemple temple;
-        this.fields = new ArrayList<>();
         GsonSimpleSerialize annotation;
         for (Field f : type.getDeclaredFields()) {
             annotation = f.getDeclaredAnnotation(GsonSimpleSerialize.class);
@@ -43,8 +56,11 @@ public class ClassTemple implements GsonSimpleSerializer {
                 temple.isPrimitive = true;
                 temple.type = FieldTemple.PrimitiveWrapper.wrapper(f.getType().getName());
             }
-            else
+            else {
                 temple.isPrimitive = false;
+            }
+            if (f.getType().isEnum())
+                temple.enumType = f.getType();
             if (! f.isAccessible())
                 f.setAccessible(true);
             try {
@@ -83,6 +99,9 @@ public class ClassTemple implements GsonSimpleSerializer {
             else if (t.isPrimitive) {
                 jo.add(t.path ,t.type.serializer.apply(in));
             }
+            else if (t.enumType != null) {
+                jo.addProperty(t.path,in.toString());
+            }
             else
                 jo.add(t.path ,manager.toJson(in));
         }
@@ -91,11 +110,9 @@ public class ClassTemple implements GsonSimpleSerializer {
     }
 
     public void deserializeObject(Object o , JsonElement object) {
-        System.out.println("deserialize " + o.getClass().getName());
         JsonObject obj = object.getAsJsonObject();
         Object in = null;
         JsonElement e ;
-        Class type = null;
         for (FieldTemple t : fields) {
             if (! obj.has(t.path)) {
                 in = null;
@@ -104,12 +121,14 @@ public class ClassTemple implements GsonSimpleSerializer {
             if (e == null || e.isJsonNull()) {
                 in = null;
             }
-            if (e.isJsonObject()) {
+            else if (t.enumType != null) {
+                in = Enum.valueOf(t.enumType,e.getAsString());
+            }
+            else if (e.isJsonObject()) {
                 in = manager.fromJson(e.getAsJsonObject());
             }
             else if (t.isPrimitive) {
                 in = t.type.deserializer.apply(e);
-                System.out.println("primitive " + t.path + " type " + in);
             }
 
             try {
@@ -118,6 +137,8 @@ public class ClassTemple implements GsonSimpleSerializer {
                 throwable.printStackTrace();
             }
         }
+        if (o instanceof IAfterGsonDeserialize)
+            ((IAfterGsonDeserialize) o).afterGsonSerialization(obj);
     }
 
 
@@ -129,7 +150,7 @@ public class ClassTemple implements GsonSimpleSerializer {
     @Override
     public void deserialize(Ref ref, JsonElement object) {
         Object o = ref.getValue();
-        if (o== null)
+        if (o== null && type.isEnum() == false)
         {
             try {
                 o = type.newInstance();

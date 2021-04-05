@@ -5,6 +5,8 @@ import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
 import org.bukkit.util.Vector;
 
+import java.util.List;
+
 public class TestEditor {
 
 
@@ -17,20 +19,9 @@ public class TestEditor {
     @GsonSimpleSerialize
     @ChatEditable
     private float floatTest = 1.0f;
-    @GsonSimpleSerialize
-    @ChatEditable
-    private String stringTest = "string test";
 
     @GsonSimpleSerialize
     @ChatEditable
-    private FieldLocationWrapper wps;
-
-    @GsonSimpleSerialize
-    @ChatEditable
-    private Vector v1 = new Vector(0,0,0);
-
-    @ChatEditable
-    @GsonSimpleSerialize
-    private TestEditor objectTest = null;
+    private List<TestInner> list;
 
 }

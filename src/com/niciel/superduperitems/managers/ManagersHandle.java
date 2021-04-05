@@ -11,9 +11,7 @@ import java.util.function.Consumer;
 
 public final class ManagersHandle {
 
-
     private static List<SiJavaPlugin> list = new ArrayList<>();
-
 
     public static <T extends  IManager> IManager getManager(Class<T> clazz) {
         T mag;

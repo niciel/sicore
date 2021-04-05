@@ -13,6 +13,8 @@ public class TestInner implements IObjectSelfEditable {
     @ChatEditable
     private String innerStringTest = " test ";
 
+
+
     @Override
     public void onEnableEditor(EditorChatObject editor) {
         editor.getTreeRoot().getPlayer().sendMessage("enabled");

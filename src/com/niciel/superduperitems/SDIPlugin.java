@@ -10,11 +10,7 @@ import com.niciel.superduperitems.customitems.ItemManager;
 //import com.niciel.superduperitems.fakeArmorstands.*;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.gsonadapter.GsonSerializable;
-import com.niciel.superduperitems.gsonadapter.adapters.GsonVector;
-import com.niciel.superduperitems.gsonadapter.adapters.GsonBlockSerializer;
-import com.niciel.superduperitems.gsonadapter.adapters.GsonItemStackAdapter;
-import com.niciel.superduperitems.gsonadapter.adapters.GsonSerializableAdapter;
-import com.niciel.superduperitems.gsonadapter.adapters.GsonUUIDAdapter;
+import com.niciel.superduperitems.gsonadapter.adapters.*;
 import com.niciel.superduperitems.inGameEditor.ChatEditorManager;
 import com.niciel.superduperitems.inventory.InventoryManager;
 import com.niciel.superduperitems.managers.ManagersHandle;
@@ -34,6 +30,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -48,7 +46,6 @@ public final class SDIPlugin extends SiJavaPlugin implements Listener , CommandE
     //private ZombieGameManager zombieManager;
     //private FakeArmorStandManager fakeArmorStandManager;
     private ParticleUtility particleUtility;
-
     private ChatEditorManager editorManager;
 
 
@@ -69,6 +66,9 @@ public final class SDIPlugin extends SiJavaPlugin implements Listener , CommandE
         gson.registerTypeAdapter(ItemStack.class , new GsonItemStackAdapter());
         gson.registerTypeAdapter(Vector.class , new GsonVector());
         gson.registerTypeAdapter(UUID.class , new GsonUUIDAdapter());
+        gson.registerTypeAdapter(List.class, new GsonListadapter());
+        gson.registerTypeAdapter(ArrayList.class, new GsonListadapter() );
+
     }
 
     @Override
@@ -86,7 +86,6 @@ public final class SDIPlugin extends SiJavaPlugin implements Listener , CommandE
         particleUtility = new ParticleUtility();
        // fakeArmorStandManager = new FakeArmorStandManager();
         this.editorManager = new ChatEditorManager();
-
 
         //getServer().getPluginManager().registerEvents(new CraftingPatternListener() , this);
         getServer().getPluginManager().registerEvents(this , this);
