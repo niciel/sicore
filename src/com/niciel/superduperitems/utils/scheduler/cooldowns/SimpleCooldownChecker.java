@@ -19,12 +19,12 @@ public class SimpleCooldownChecker {
         this(waitTill , 10);
     }
 
-
     public SimpleCooldownChecker(int waitSec, int safeCapacity) {
         this.waitTill = 1000*waitSec;
         this.safeCapacity = safeCapacity;
         this.uuidExpiredTime = new ArrayDeque<>();
         this.uuidToRemove = new ArrayDeque<>();
+        this.uuid = new HashSet<>();
     }
 
     public boolean isWaiting(UUID uuid) {
@@ -57,5 +57,4 @@ public class SimpleCooldownChecker {
                 timer = Long.MAX_VALUE;
         }
     }
-
 }
