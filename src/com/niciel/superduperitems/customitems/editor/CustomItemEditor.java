@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomItemEditor extends CustomInventory {
+public class CustomItemEditor extends CustomInventory<CustomItemEditor> {
 
 
     private static ItemManager manager = SDIPlugin.instance.getManager(ItemManager.class);
@@ -28,6 +28,11 @@ public class CustomItemEditor extends CustomInventory {
 
     ItemComponent component;
 
+    @Override
+    public CustomItemEditor getCData() {
+        return this;
+    }
+
     public CustomItemEditor(Material material) {
         super(6, "edytor");
         is = new ItemStack(material);
@@ -38,9 +43,9 @@ public class CustomItemEditor extends CustomInventory {
 
 
         //zmiana edytuj usun komponent
-        set(9, edytuj, new Slot() {
+        set(9, edytuj, new Slot<CustomItemEditor>() {
             @Override
-            public void onClick(InventoryClickEvent e) {
+            public void onClick(CustomItemEditor editor ,InventoryClickEvent e) {
                 if (remove == true)
                 {
                     remove = false;
@@ -80,11 +85,8 @@ public class CustomItemEditor extends CustomInventory {
         for (int i = 0 ; i < customItem.allComponents.size() ; i++) {
             slot = 18+i;
             int finalI = i;
-            set(slot , new ItemBuilder(Material.STONE_AXE).get() , new Slot() {
-                @Override
-                public void onClick(InventoryClickEvent e) {
-                    performedAction_Component(finalI);
-                }
+            set(slot , new ItemBuilder(Material.STONE_AXE).get() , (editor,e) -> {
+                performedAction_Component(finalI);
             } );
         }
     }

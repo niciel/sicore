@@ -742,7 +742,7 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
         WeakReference<CustomItem> _item = new WeakReference<>(item);
         WeakReference<DataInventory> _inventory = new WeakReference<>(inv);
         WeakReference<ItemManager> _instance = new WeakReference<>(this);
-        inv.set(position , item.createItem(1) , s -> {
+        inv.set(position , item.createItem(1) , (editor,s) -> {
             s.setCancelled(true);
             s.setResult(Event.Result.DENY);
             if (_inventory.get().isHolderInventory(s.getClickedInventory())) {
@@ -803,13 +803,14 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
         WeakReference<DataInventory<CustomItem>> _category = new WeakReference<>(itemsCategory);
         categoryToInventory.put(category.name , itemsCategory);
 
-        itemsCategory.defaultSlot = s-> {
+        itemsCategory.defaultSlot = (editor,s)-> {
             s.setResult(Event.Result.DENY);
             s.setCancelled(true);
         };
 
         WeakReference<DataInventory> _instance = new WeakReference<>(categorys);
-        categorys.set(empty , category.represent , s-> {
+        categorys.set(empty , category.represent , (editor,s)-> {
+            _instance.get().cancelEvent(s);
             _instance.get().cancelEvent(s);
             if (_instance.get().isHolderInventory(s.getClickedInventory())) {
                 s.getWhoClicked().openInventory(_category.get().getInventory());

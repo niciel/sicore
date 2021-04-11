@@ -2,7 +2,7 @@ package com.niciel.superduperitems.customitems;
 
 import com.niciel.superduperitems.inventory.CustomInventory;
 
-public class DataInventory<T> extends CustomInventory {
+public class DataInventory<T> extends CustomInventory<DataInventory> {
 
     private T[] data;
 

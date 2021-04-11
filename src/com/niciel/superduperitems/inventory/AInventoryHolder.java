@@ -5,7 +5,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-public abstract class AInventoryHolder implements IInventoryHolder{
+public abstract class AInventoryHolder<T> implements IInventoryHolder{
 
     private Inventory inventory;
     private UUID uuid;
@@ -13,6 +13,10 @@ public abstract class AInventoryHolder implements IInventoryHolder{
     public AInventoryHolder(int labels, String title) {
         this.inventory = Bukkit.createInventory(this, labels*9 , title);
         uuid = UUID.randomUUID();
+    }
+
+    public T getCData() {
+        return null;
     }
 
     @Override

@@ -5,12 +5,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.ItemStack;
 
-public class CustomInventory extends AInventoryHolder {
+import java.util.function.Consumer;
+
+public class CustomInventory<T> extends AInventoryHolder<T> {
 
 
-    private Slot[] slots;
-    public Slot defaultSlot;
-
+    private Slot<T>[] slots;
+    public Slot<T> defaultSlot;
 
     public final boolean onlyCustomInventory;
 
@@ -27,7 +28,7 @@ public class CustomInventory extends AInventoryHolder {
     }
 
 
-    public void add(int slot , ItemStack is , Slot s) {
+    public void add(int slot , ItemStack is , Slot<T> s) {
         if (is != null)
             getInventory().setItem(slot , is);
         if (s != null)
@@ -40,25 +41,54 @@ public class CustomInventory extends AInventoryHolder {
                 getInventory().setItem(i , is);
         }
     }
-    public void fillEmpty(Slot si) {
+    public void fillEmpty(Slot<T> si) {
         for (int i  = 0 ; i < slots.length ; i++) {
             if (slots[i] == null)
                 slots[i] = si;
         }
     }
 
-    public void set(int slot , ItemStack is , Slot s) {
+    /**
+     *
+     * @param slot
+     * @param a beginning inslusive
+     * @param b end inclusive
+     */
+    public void fill(Slot<T> slot , int a , int b) {
+        fill(a,b, i -> set(i,slot));
+    }
+
+    public void fill(ItemStack is , int a, int b) {
+        fill(a,b,i-> set(i,is));
+    }
+
+    private void fill(ItemStack is , Slot<T> s, int a,int b) {
+        fill(a,b, i -> set(i,is,s));
+    }
+
+    private void fill(int a, int b,Consumer<Integer> id ) {
+        if (a >=0 || b < this.slots.length) {
+            for (int i = a ; i <= b ; i++) {
+                id.accept(i);
+            }
+        }
+    }
+
+    public void set(int slot , ItemStack is , Slot<T> s) {
         getInventory().setItem(slot , is);
         slots[slot] = s;
     }
 
-    public void set(int slot , Slot s) {
+    public void set(int slot , Slot<T> s) {
         slots[slot] = s;
     }
 
     public void set(int slot , ItemStack is) {
         getInventory().setItem(slot , is);
     }
+
+
+
 
     public void onClose(Player p ) {
 
@@ -107,13 +137,10 @@ public class CustomInventory extends AInventoryHolder {
         }
         if (slots[i] == null) {
             if (defaultSlot != null)
-                defaultSlot.onClick(e);
+                defaultSlot.onClick(getCData() ,e);
             return;
         }
-        slots[i].onClick(e);
-        if (! e.isCancelled()) {
-
-        }
+        slots[i].onClick(getCData() ,e);
     }
 
 

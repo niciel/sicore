@@ -84,7 +84,6 @@ public class SiJavaPlugin extends JavaPlugin {
     public void onEnable() {
 
         onPluginEnable();
-        forEachManagers(c-> c.onEnable());
         forEachManagers(c -> {
             if (c instanceof Listener)
                 Bukkit.getServer().getPluginManager().registerEvents((Listener) c, this);
@@ -94,6 +93,7 @@ public class SiJavaPlugin extends JavaPlugin {
                     SimpleCommand command =  new SimpleCommand((CommandExecutor) c , sc.command() , sc.description() , sc.usage() , Arrays.asList(sc.aliases()));
                 }
             }
+            c.onEnable();
             logInfo("zarejestrowano manager: " + c.getClass().getName());
         });
 

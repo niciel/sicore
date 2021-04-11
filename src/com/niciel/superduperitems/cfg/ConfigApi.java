@@ -122,6 +122,10 @@ public class ConfigApi {
 
     public static FieldSerializer getSerializer(Class clazz) {
         FieldSerializer ser = nameToSerializer.get(clazz.getName());
+        if (ser == null) {
+            ser = new ObjectCfgSerializer(clazz, clazz.getName());
+            register(clazz , ser);
+        }
         return ser;
     }
 
