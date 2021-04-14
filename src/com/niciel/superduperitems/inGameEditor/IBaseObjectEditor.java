@@ -8,7 +8,7 @@ import java.util.function.BiConsumer;
 
 public interface IBaseObjectEditor<T> {
 
-    boolean select(IChatEditorMenu menu) ;
+    boolean select(ChatEditorMenu menu) ;
 
     GuiMultiCommand commands();
 

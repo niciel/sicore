@@ -24,7 +24,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
 
     private final Player p;
     private final Ref<T> refToEdit;
-    private Stack<IChatEditorMenu> stack;
+    private Stack<ChatEditorMenu> stack;
 
     private BiConsumer<EditorResult , IBaseObjectEditor> exitCode;
     public Consumer<IBaseObjectEditor> sendOnMainPage;
@@ -47,21 +47,21 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         this.editorCommands = new GuiMultiCommand();
         this.playerPointer = guimanager.registerCommandPointer(this.multicommand);
         this.editorCpointer = guimanager.registerCommandPointer(this.editorCommands);
-        IChatEditor t = editorManager.getEditor(this ,toEdit.getClass() , "baza nazwa" , " baza opis");
-        if ((t instanceof IChatEditorMenu) == false) {
+        ChatEditor t = editorManager.getEditor(this ,toEdit.getClass() , "baza nazwa" , " baza opis");
+        if ((t instanceof ChatEditorMenu) == false) {
             disabled = true;
             return;
         }
-        stack.push((IChatEditorMenu) t);
+        stack.push((ChatEditorMenu) t);
         t.initialize(refToEdit);
-        ((IChatEditorMenu) t).onSelect(null);
+        ((ChatEditorMenu) t).onSelect(null);
     }
 
     @Override
-    public boolean select(IChatEditorMenu menu) {
+    public boolean select(ChatEditorMenu menu) {
         if (disabled)
             return false;
-        IChatEditorMenu last = stack.peek();
+        ChatEditorMenu last = stack.peek();
         last.onDeselect();
         multicommand.clear();
         stack.push(menu);
@@ -134,8 +134,7 @@ public class ChatCommandEditor<T> implements IBaseObjectEditor {
         }
         if (disabled)
             return;
-        stack.peek().sendItem(getPlayer());
-
+        stack.peek().sendMenu();
         if (stack.size() > 1)
             getPlayer().spigot().sendMessage(goBack);
         else {

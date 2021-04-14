@@ -21,10 +21,6 @@ public class ClassTemple implements GsonSimpleSerializer {
     private GsonManager manager;
 
 
-
-
-
-
     public ClassTemple(Class tyoe) {
         manager = IManager.getManager(GsonManager.class);
         this.type = tyoe;
@@ -41,11 +37,14 @@ public class ClassTemple implements GsonSimpleSerializer {
         String path;
         FieldTemple temple;
         GsonSimpleSerialize annotation;
-        for (Field f : type.getDeclaredFields()) {
+        for (Field f : clazz.getDeclaredFields()) {
             annotation = f.getDeclaredAnnotation(GsonSimpleSerialize.class);
             if (annotation == null) {
                 continue;
             }
+            if (! f.isAccessible())
+                f.setAccessible(true);
+
             path = annotation.name();
             if (path.isEmpty())
                 path = f.getName();
@@ -61,8 +60,7 @@ public class ClassTemple implements GsonSimpleSerializer {
             }
             if (f.getType().isEnum())
                 temple.enumType = f.getType();
-            if (! f.isAccessible())
-                f.setAccessible(true);
+
             try {
                 temple.getter = look.unreflectGetter(f);
                 temple.setter = look.unreflectSetter(f);

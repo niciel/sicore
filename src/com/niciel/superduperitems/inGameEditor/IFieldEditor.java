@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 
 /**
- * gdy klasa  {@link IChatEditor} posiada ten interfejs za kazdym razem po stworzeniu edytora na podstawie pola klasy powinna zostac wywolana metoda init(Field)
+ * gdy klasa  {@link ChatEditor} posiada ten interfejs za kazdym razem po stworzeniu edytora na podstawie pola klasy powinna zostac wywolana metoda init(Field)
  */
 public interface IFieldEditor {
 

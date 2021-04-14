@@ -7,11 +7,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
-public class CustomInventory<T> extends AInventoryHolder<T> {
+public class CustomInventory extends AInventoryHolder {
 
 
-    private Slot<T>[] slots;
-    public Slot<T> defaultSlot;
+    private Slot[] slots;
+    public Slot defaultSlot;
 
     public final boolean onlyCustomInventory;
 
@@ -28,7 +28,7 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
     }
 
 
-    public void add(int slot , ItemStack is , Slot<T> s) {
+    public void add(int slot , ItemStack is , Slot s) {
         if (is != null)
             getInventory().setItem(slot , is);
         if (s != null)
@@ -41,7 +41,7 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
                 getInventory().setItem(i , is);
         }
     }
-    public void fillEmpty(Slot<T> si) {
+    public void fillEmpty(Slot si) {
         for (int i  = 0 ; i < slots.length ; i++) {
             if (slots[i] == null)
                 slots[i] = si;
@@ -54,7 +54,7 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
      * @param a beginning inslusive
      * @param b end inclusive
      */
-    public void fill(Slot<T> slot , int a , int b) {
+    public void fill(Slot slot , int a , int b) {
         fill(a,b, i -> set(i,slot));
     }
 
@@ -62,7 +62,7 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
         fill(a,b,i-> set(i,is));
     }
 
-    private void fill(ItemStack is , Slot<T> s, int a,int b) {
+    private void fill(ItemStack is , Slot s, int a,int b) {
         fill(a,b, i -> set(i,is,s));
     }
 
@@ -74,12 +74,12 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
         }
     }
 
-    public void set(int slot , ItemStack is , Slot<T> s) {
+    public void set(int slot , ItemStack is , Slot s) {
         getInventory().setItem(slot , is);
         slots[slot] = s;
     }
 
-    public void set(int slot , Slot<T> s) {
+    public void set(int slot , Slot s) {
         slots[slot] = s;
     }
 
@@ -137,10 +137,10 @@ public class CustomInventory<T> extends AInventoryHolder<T> {
         }
         if (slots[i] == null) {
             if (defaultSlot != null)
-                defaultSlot.onClick(getCData() ,e);
+                defaultSlot.onClick(e);
             return;
         }
-        slots[i].onClick(getCData() ,e);
+        slots[i].onClick(e);
     }
 
 

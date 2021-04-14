@@ -1,16 +1,14 @@
 package com.niciel.superduperitems.inGameEditor.editors;
 
-import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.helpers.GuiCommand;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
-import com.niciel.superduperitems.inGameEditor.IChatEditor;
-import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
+import com.niciel.superduperitems.inGameEditor.ChatEditor;
+import com.niciel.superduperitems.inGameEditor.ChatEditorMenu;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
-public class EditorChatString extends IChatEditor<String> {
+public class EditorChatString extends ChatEditor<String> {
 
 
 
@@ -28,7 +26,7 @@ public class EditorChatString extends IChatEditor<String> {
 
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         pointer = owner.getTreeRoot().commands().register(new GuiCommand() {
             @Override
             public void execute(Player p, String left) {

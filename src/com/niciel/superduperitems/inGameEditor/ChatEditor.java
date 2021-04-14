@@ -3,11 +3,7 @@ package com.niciel.superduperitems.inGameEditor;
 import com.niciel.superduperitems.utils.Ref;
 import org.bukkit.entity.Player;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-
-public abstract class IChatEditor<T extends Object> {
+public abstract class ChatEditor<T extends Object> {
 
 
     private String name;
@@ -19,12 +15,12 @@ public abstract class IChatEditor<T extends Object> {
      * @param name
      * @param description
      */
-    public IChatEditor(String name, String description) {
+    public ChatEditor(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    public abstract void enableEditor(IChatEditorMenu owner);
+    public abstract void enableEditor(ChatEditorMenu owner);
     public abstract void disableEditor();
 
 

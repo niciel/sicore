@@ -2,7 +2,6 @@ package com.niciel.superduperitems.inGameEditor.editors.object;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.helpers.GuiCommand;
-import com.niciel.superduperitems.commandGui.helpers.GuiMultiCommand;
 import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
 import com.niciel.superduperitems.inGameEditor.*;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
@@ -19,10 +18,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.BiConsumer;
 
-public class EditorChatList extends IChatEditorMenu<List> implements IFieldEditor  {
+public class EditorChatList extends ChatEditorMenu<List> implements IFieldEditor  {
 
     private Class genericType;
     private String genericName;
@@ -48,6 +45,11 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
         super(owner, name, description);
     }
 
+    @Override
+    public void sendMenu() {
+
+    }
+
     public EditorChatList(IBaseObjectEditor owner, String name, String description, Class parametrizedType) {
         super(owner, name, description);
         initWithParametrizedType(parametrizedType);
@@ -66,7 +68,7 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
     }
 
     @Override
-    public void onSelect(IChatEditorMenu menu) {
+    public void onSelect(ChatEditorMenu menu) {
         selected = true;
 
         this.removeCommand = menu.getTreeRoot().commands().register(new GuiCommand() {
@@ -144,7 +146,7 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
 
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         selectToEditCommand = owner.getTreeRoot().commands().register( new SimpleButtonGui(c-> {
             owner.getTreeRoot().select(this);
         }));
@@ -179,7 +181,7 @@ public class EditorChatList extends IChatEditorMenu<List> implements IFieldEdito
                     in.setColor(ChatColor.RED);
                     tc.addExtra(in);
                     tc.addExtra(",   ,");
-                    in = new TextComponent("[edit]");
+                    in = new TextComponent("[selectEditorCommand]");
                     in.setColor(ChatColor.GREEN);
                     in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND ,this.editListElement + " " +constantIDs.get(i)));
                     tc.addExtra(in);

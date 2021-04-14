@@ -31,7 +31,7 @@ public final class GsonManager implements IManager {
     public void build(Consumer<GsonBuilder> cons) {
         if (cons != null)
             cons.accept(builder);
-
+        builder.disableHtmlEscaping();
         gson = builder.create();
         builder = null;
     }
@@ -138,6 +138,8 @@ public final class GsonManager implements IManager {
         try {
             Writer writer = new FileWriter(f);
             writer.write(gson.toJson(o).toString());
+            writer.flush();
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -186,10 +188,11 @@ public final class GsonManager implements IManager {
         serializers.put(clazz.getName() , ser);
     }
 
-
-    @Deprecated
-    public void registerSimpleSerializer(Class clazz) {
+    public Gson getGson() {
+        return gson;
     }
+
+
 
 
 }

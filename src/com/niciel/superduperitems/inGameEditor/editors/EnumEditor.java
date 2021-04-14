@@ -1,10 +1,9 @@
-package com.niciel.superduperitems.inGameEditor.editors.object;
+package com.niciel.superduperitems.inGameEditor.editors;
 
 import com.niciel.superduperitems.commandGui.*;
 import com.niciel.superduperitems.commandGui.helpers.GuiCommand;
-import com.niciel.superduperitems.inGameEditor.IChatEditor;
-import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
-import com.niciel.superduperitems.utils.Ref;
+import com.niciel.superduperitems.inGameEditor.ChatEditor;
+import com.niciel.superduperitems.inGameEditor.ChatEditorMenu;
 import com.niciel.superduperitems.utils.SpigotUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -15,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.List;
 
-public class EnumEditor extends IChatEditor<Object> {
+public class EnumEditor extends ChatEditor<Object> {
 
     private HashMap<String , Object> map ;
     private boolean ERROR = false;
@@ -31,7 +30,7 @@ public class EnumEditor extends IChatEditor<Object> {
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         this.map = new HashMap<>();
         Object[] array = enumType.getEnumConstants();
         String n = null;

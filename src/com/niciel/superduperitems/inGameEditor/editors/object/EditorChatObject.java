@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> implements IFieldEditor {
+public  class EditorChatObject<T extends Object> extends ChatEditorMenu<T> implements IFieldEditor {
 
     private String description;
     private String name;
@@ -76,7 +76,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
         String name;
         String description;
         InheredClasses inh;
-        IChatEditor editor;
+        ChatEditor editor;
         Class fieldType;
         final WeakReference<EditorChatObject> ownerEditor = new WeakReference<>(this);
         final MethodHandles.Lookup lookup = MethodHandles.lookup();
@@ -129,7 +129,41 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     }
 
     @Override
-    public void onSelect(IChatEditorMenu menu) {
+    public void sendMenu() {
+        Player p = getTreeRoot().getPlayer();
+        if (getReference().getValue() != null) {
+            TextComponent tc;
+            for (InheredClasses inh : menuTree) {
+                tc = new TextComponent("****typ: " + inh.nameOfClass+ "****");
+                tc.setColor(ChatColor.GRAY);
+                p.spigot().sendMessage(tc);
+                for (FieldData d : inh.fields) {
+                    d.editor.sendItem(p);
+                }
+            }
+            if (getReference().getValue() instanceof IObjectSelfEditable)
+                ((IObjectSelfEditable) getReference().getValue()).onSendItemMenu(p);
+        }
+        else {
+            TextComponent tc = new TextComponent("********new:"+ name +"********");
+            TextComponent in ;
+            tc.setColor(ChatColor.GRAY);
+            p.spigot().sendMessage(tc);
+            for (NewInstanceData nid : classes) {
+                tc = new TextComponent("typ: " + SpigotUtils.fixStringLength(nid.name,15) );
+                tc.setColor(ChatColor.GRAY);
+                tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT ,new Text(description)));
+                in = new TextComponent("[new]");
+                in.setColor(ChatColor.GOLD);
+                in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , createNewCommand + " " + nid.name));
+                tc.addExtra(in);
+                p.spigot().sendMessage(tc);
+            }
+        }
+    }
+
+    @Override
+    public void onSelect(ChatEditorMenu menu) {
         if (fieldeditor) {
             classes = IManager.getManager(ChatEditorManager.class).getAllSubClasses(fieldType);
         }
@@ -201,7 +235,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         EditorChatObject inst = this;
         editCommand = getTreeRoot().commands().register(new SimpleButtonGui(player -> {
             owner.getTreeRoot().select(inst);
@@ -252,39 +286,11 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
     public void sendItem(Player p) {
         id++;
         if (selected) {
-            if (getReference().getValue() != null) {
-                TextComponent tc;
-                for (InheredClasses inh : menuTree) {
-                    tc = new TextComponent("****typ: " + inh.nameOfClass+ "****");
-                    tc.setColor(ChatColor.GRAY);
-                    p.spigot().sendMessage(tc);
-                    for (FieldData d : inh.fields) {
-                        d.editor.sendItem(p);
-                    }
-                }
-                if (getReference().getValue() instanceof IObjectSelfEditable)
-                    ((IObjectSelfEditable) getReference().getValue()).onSendItemMenu(p);
-            }
-            else {
-                TextComponent tc = new TextComponent("********new:"+ name +"********");
-                TextComponent in ;
-                tc.setColor(ChatColor.GRAY);
-                p.spigot().sendMessage(tc);
-                for (NewInstanceData nid : classes) {
-                    tc = new TextComponent("typ: " + SpigotUtils.fixStringLength(nid.name,15) );
-                    tc.setColor(ChatColor.GRAY);
-                    tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT ,new Text(description)));
-                    in = new TextComponent("[new]");
-                    in.setColor(ChatColor.GOLD);
-                    in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , createNewCommand + " " + nid.name));
-                    tc.addExtra(in);
-                    p.spigot().sendMessage(tc);
-                }
-            }
+            sendMenu();
         }
         else {
             TextComponent tc = new TextComponent("Object:[" + getName()+"]: ");
-            TextComponent in  = new TextComponent("[edit]");
+            TextComponent in  = new TextComponent("[selectEditorCommand]");
             tc.setColor(ChatColor.GRAY);
             in.setColor(ChatColor.GREEN);
             in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND ,editCommand));
@@ -305,7 +311,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
 
     private class FieldData {
 
-        public FieldData(Class type, String name, String description, IChatEditor item) {
+        public FieldData(Class type, String name, String description, ChatEditor item) {
             this.type = type;
             this.name = name;
             this.description = description;
@@ -316,7 +322,7 @@ public  class EditorChatObject<T extends Object> extends IChatEditorMenu<T> impl
         public Class type;
         public String name;
         public String description;
-        public IChatEditor editor;
+        public ChatEditor editor;
 
     }
 

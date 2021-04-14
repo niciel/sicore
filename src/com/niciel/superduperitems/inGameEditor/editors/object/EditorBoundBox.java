@@ -3,7 +3,7 @@ package com.niciel.superduperitems.inGameEditor.editors.object;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
 import com.niciel.superduperitems.inGameEditor.IBaseObjectEditor;
-import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
+import com.niciel.superduperitems.inGameEditor.ChatEditorMenu;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -11,17 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.WanderingTrader;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.lang.ref.WeakReference;
 
 
-public class EditorBoundBox extends IChatEditorMenu<BoundingBox> {
+public class EditorBoundBox extends ChatEditorMenu<BoundingBox> {
 
     private String selectCommand;
     private boolean selected;
@@ -35,7 +31,12 @@ public class EditorBoundBox extends IChatEditorMenu<BoundingBox> {
 
 
     @Override
-    public void onSelect(IChatEditorMenu menu) {
+    public void sendMenu() {
+
+    }
+
+    @Override
+    public void onSelect(ChatEditorMenu menu) {
         selected = true;
     }
 
@@ -45,7 +46,7 @@ public class EditorBoundBox extends IChatEditorMenu<BoundingBox> {
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         selected = false;
         selectCommand = owner.getTreeRoot().commands().register(new SimpleButtonGui( c-> {
             owner.getTreeRoot().select(this);
@@ -73,7 +74,7 @@ public class EditorBoundBox extends IChatEditorMenu<BoundingBox> {
         else {
             TextComponent tc = new TextComponent("BoundingBox: ");
             tc.setColor(ChatColor.GRAY);
-            TextComponent in = new TextComponent("[edit]");
+            TextComponent in = new TextComponent("[selectEditorCommand]");
             in.setColor(ChatColor.GREEN);
             in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , selectCommand));
             tc.addExtra(in);

@@ -2,9 +2,9 @@ package com.niciel.superduperitems.inventory;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public interface Slot<T> {
+public interface Slot {
 
 
-    void onClick(T dat , InventoryClickEvent e);
+    void onClick(InventoryClickEvent e);
 
 }

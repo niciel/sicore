@@ -17,7 +17,7 @@ public interface IManager  {
     default void onLateEnable(){}
 
     default SiJavaPlugin getPlugin() {
-        return SDIPlugin.instance;
+        return ManagersHandle.getRegisteredOwner((Class<IManager>) getClass());
     }
 
     /**

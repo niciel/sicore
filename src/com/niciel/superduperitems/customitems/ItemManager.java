@@ -577,7 +577,7 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
     }
 
 
-    public boolean editItem(CustomItem item, Player p , boolean edit) {
+    public boolean editItem(CustomItem item, Player p , boolean selectEditorCommand) {
         if (item == null)
             return false;
         ChatCommandEditor editor = this.editor.get().createChatCommandEditor(p , item);
@@ -742,7 +742,7 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
         WeakReference<CustomItem> _item = new WeakReference<>(item);
         WeakReference<DataInventory> _inventory = new WeakReference<>(inv);
         WeakReference<ItemManager> _instance = new WeakReference<>(this);
-        inv.set(position , item.createItem(1) , (editor,s) -> {
+        inv.set(position , item.createItem(1) , (s) -> {
             s.setCancelled(true);
             s.setResult(Event.Result.DENY);
             if (_inventory.get().isHolderInventory(s.getClickedInventory())) {
@@ -761,7 +761,7 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
                     tc.addExtra(in);
                     tc.addExtra(" ");
 
-                    in = new TextComponent("[edit]");
+                    in = new TextComponent("[selectEditorCommand]");
                     in.setColor(ChatColor.GREEN);
                     in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,pointerEditItem.getCommand() + " " + _item.get().nameID));
                     tc.addExtra(in);
@@ -803,13 +803,13 @@ public class ItemManager  implements IManager, Listener , CommandExecutor {
         WeakReference<DataInventory<CustomItem>> _category = new WeakReference<>(itemsCategory);
         categoryToInventory.put(category.name , itemsCategory);
 
-        itemsCategory.defaultSlot = (editor,s)-> {
+        itemsCategory.defaultSlot = (s)-> {
             s.setResult(Event.Result.DENY);
             s.setCancelled(true);
         };
 
         WeakReference<DataInventory> _instance = new WeakReference<>(categorys);
-        categorys.set(empty , category.represent , (editor,s)-> {
+        categorys.set(empty , category.represent , (s)-> {
             _instance.get().cancelEvent(s);
             _instance.get().cancelEvent(s);
             if (_instance.get().isHolderInventory(s.getClickedInventory())) {

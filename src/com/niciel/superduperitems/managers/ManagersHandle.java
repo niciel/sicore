@@ -23,6 +23,15 @@ public final class ManagersHandle {
         return null;
     }
 
+    public static SiJavaPlugin getRegisteredOwner(Class<IManager> clazz) {
+        for (SiJavaPlugin p : list) {
+            if (p.getManager(clazz) != null)
+                return p;
+        }
+        return null;
+    }
+
+
     public static void register(SiJavaPlugin plugin) {
         if (list.stream().filter(p-> p.getName().contentEquals(plugin.getName())).findAny().isPresent())
             return;

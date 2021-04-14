@@ -1,15 +1,10 @@
 package com.niciel.superduperitems.inGameEditor.editors.object;
 
 import com.niciel.superduperitems.SDIPlugin;
-import com.niciel.superduperitems.commandGui.CommandPointer;
-import com.niciel.superduperitems.commandGui.GuiCommandArgs;
-import com.niciel.superduperitems.commandGui.GuiCommandManager;
 import com.niciel.superduperitems.commandGui.helpers.SimpleButtonGui;
-import com.niciel.superduperitems.inGameEditor.ChatCommandEditor;
 import com.niciel.superduperitems.inGameEditor.IBaseObjectEditor;
-import com.niciel.superduperitems.inGameEditor.IChatEditorMenu;
+import com.niciel.superduperitems.inGameEditor.ChatEditorMenu;
 import com.niciel.superduperitems.utils.IRefSilent;
-import com.niciel.superduperitems.utils.Ref;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -28,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 
-public class EditorChatVector extends IChatEditorMenu<Vector> {
+public class EditorChatVector extends ChatEditorMenu<Vector> {
 
 
     private static HashMap<String , Get> map;
@@ -48,7 +43,12 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     }
 
     @Override
-    public void onSelect(IChatEditorMenu menu) {
+    public void sendMenu() {
+
+    }
+
+    @Override
+    public void onSelect(ChatEditorMenu menu) {
         selected = true;
         WeakReference<EditorChatVector> _instance = new WeakReference<>(this);
         command = menu.getTreeRoot().commands().register((pl, args , i) -> {
@@ -126,7 +126,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
     }
 
     @Override
-    public void enableEditor(IChatEditorMenu owner) {
+    public void enableEditor(ChatEditorMenu owner) {
         selected = false;
         commandEdit = owner.getTreeRoot().commands().register(new SimpleButtonGui(p-> {
             owner.getTreeRoot().select(this);
@@ -182,7 +182,7 @@ public class EditorChatVector extends IChatEditorMenu<Vector> {
         }
         if (selected == false) {
             TextComponent tc = new TextComponent("[vector] " + formatDecimalVector() + " ");
-            TextComponent in = new TextComponent("[edit]");
+            TextComponent in = new TextComponent("[selectEditorCommand]");
             in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , commandEdit));
             tc.addExtra(in);
             p.spigot().sendMessage(tc);

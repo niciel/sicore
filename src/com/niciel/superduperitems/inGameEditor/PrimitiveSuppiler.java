@@ -1,8 +1,5 @@
 package com.niciel.superduperitems.inGameEditor;
 
-import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
-
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 
@@ -10,7 +7,7 @@ public class PrimitiveSuppiler implements IChatEditorSuppiler {
 
     private MethodHandle construcotr;
 
-    public PrimitiveSuppiler(Class<? extends IChatEditor> clazz) {
+    public PrimitiveSuppiler(Class<? extends ChatEditor> clazz) {
         MethodHandles.Lookup look = MethodHandles.lookup();
         try {
             construcotr = look.unreflectConstructor(clazz.getDeclaredConstructor(String.class , String.class));
@@ -22,9 +19,9 @@ public class PrimitiveSuppiler implements IChatEditorSuppiler {
     }
 
     @Override
-    public IChatEditor get(IBaseObjectEditor editor ,Class clazz,String name , String description) {
+    public ChatEditor get(IBaseObjectEditor editor , Class clazz, String name , String description) {
         try {
-            return (IChatEditor) construcotr.invoke(name , description );
+            return (ChatEditor) construcotr.invoke(name , description );
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

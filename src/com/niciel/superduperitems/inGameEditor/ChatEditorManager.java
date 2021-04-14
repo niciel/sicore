@@ -2,22 +2,13 @@ package com.niciel.superduperitems.inGameEditor;
 
 //import com.niciel.superduperitems.fakeArmorstands.ArmorStandModel;
 //import com.niciel.superduperitems.fakeArmorstands.ArmorStandModelEditor;
-import com.google.gson.stream.JsonWriter;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
-import com.niciel.superduperitems.inGameEditor.annotations.ChatObjectName;
 import com.niciel.superduperitems.inGameEditor.editors.*;
-import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatList;
-import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
-import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatVector;
-import com.niciel.superduperitems.inGameEditor.editors.object.EnumEditor;
+import com.niciel.superduperitems.inGameEditor.editors.object.*;
 import com.niciel.superduperitems.managers.SimpleCommandInfo;
 import com.niciel.superduperitems.utils.Dual;
 import com.niciel.superduperitems.managers.IManager;
-import com.niciel.superduperitems.utils.Ref;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,10 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -79,14 +70,15 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         addSupplier(Vector.class , (e, clazz,name , description) -> {
             return new EditorChatVector(e ,name , description , EditorChatVector.class);
         });
-
+        addSupplier(ItemStack.class ,(e,clazz,name,description) -> {
+            return new ItemStackEditor(e,name,description);
+        } );
         //addSupplier(ArmorStandModel.class , new PrimitiveSuppiler(String.class));
 
 
 
         GsonManager m = IManager.getManager(GsonManager.class);
-        m.registerSimpleSerializer(TestEditor.class);
-        m.registerSimpleSerializer(TestExtends.class);
+
         register(TestEditor.class);
         register(TestExtends.class);
 
@@ -237,7 +229,7 @@ public class ChatEditorManager implements IManager , Listener , CommandExecutor 
         suppilerss.add(new Dual<>(predict , sup));
     }
 
-    public  IChatEditor getEditor(IBaseObjectEditor editor , Class clazz , String name , String description) {
+    public ChatEditor getEditor(IBaseObjectEditor editor , Class clazz , String name , String description) {
         Dual<Class , IChatEditorSuppiler> dual = classNameToEditor.get(clazz.getName());
         if (dual != null) {
             return dual.second.get(editor,clazz,name,description);
