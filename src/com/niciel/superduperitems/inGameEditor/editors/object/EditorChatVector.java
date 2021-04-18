@@ -44,7 +44,78 @@ public class EditorChatVector extends ChatEditorMenu<Vector> {
 
     @Override
     public void sendMenu() {
+        if (getReference().getValue() == null) {
+            ((IRefSilent) getReference()).setSilently(new Vector(0,0,0));
+        }
+        Player p = getTreeRoot().getPlayer();
+        p.sendMessage("Value: " + formatDecimalVector());
+        TextComponent tc = new TextComponent("showAxis: " + showaxis);
+        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,showAxisCommand));
+        p.spigot().sendMessage(tc);
+        TextComponent in;
 
+        tc = new TextComponent();
+        in = new TextComponent("[player]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , command + " here"));
+        tc.addExtra(in);
+        tc.addExtra(", ");
+
+        in = new TextComponent("[eye]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , command + " eye"));
+        tc.addExtra(in);
+        tc.addExtra(", ");
+
+
+        in = new TextComponent("X");
+        in.setColor(ChatColor.BLUE);
+        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getX() +"").create()));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[s]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " x "));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[a]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addx "));
+        tc.addExtra(in);
+        tc.addExtra(", ");
+
+        in = new TextComponent("Y");
+        in.setColor(ChatColor.BLUE);
+        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getY() +"").create()));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[s]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " y "));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[a]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addy "));
+        tc.addExtra(in);
+        tc.addExtra(", ");
+
+        in = new TextComponent("Z");
+        in.setColor(ChatColor.BLUE);
+        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getZ() +"").create()));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[s]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " z "));
+        tc.addExtra(in);
+        tc.addExtra("|");
+        in = new TextComponent("[a]");
+        in.setColor(ChatColor.GREEN);
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addz "));
+        tc.addExtra(in);
+
+        p.spigot().sendMessage(tc);
     }
 
     @Override
@@ -166,8 +237,11 @@ public class EditorChatVector extends ChatEditorMenu<Vector> {
     }
 
     private String formatDecimalVector() {
-        StringBuilder sb = new StringBuilder("[X:");
         Vector v = getReference().getValue();
+        if (v == null) {
+            return "null";
+        }
+        StringBuilder sb = new StringBuilder("[X:");
         sb.append(decimal.format(v.getX())).append(",Y:");
         sb.append(decimal.format(v.getY())).append(",Z:");
         sb.append(decimal.format(v.getZ())).append("]");
@@ -177,84 +251,10 @@ public class EditorChatVector extends ChatEditorMenu<Vector> {
 
     @Override
     public void sendItem(Player p) {
-        if (getReference().getValue() == null) {
-            ((IRefSilent) getReference()).setSilently(new Vector(0,0,0));
-        }
-        if (selected == false) {
-            TextComponent tc = new TextComponent("[vector] " + formatDecimalVector() + " ");
-            TextComponent in = new TextComponent("[selectEditorCommand]");
-            in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , commandEdit));
-            tc.addExtra(in);
-            p.spigot().sendMessage(tc);
-            return;
-        }
-        p.sendMessage("Value: " + formatDecimalVector());
-        TextComponent tc = new TextComponent("showAxis: " + showaxis);
-        tc.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,showAxisCommand));
-        p.spigot().sendMessage(tc);
-        TextComponent in;
-
-        tc = new TextComponent();
-        in = new TextComponent("[player]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , command + " here"));
+        TextComponent tc = new TextComponent("[vector] " + formatDecimalVector() + " ");
+        TextComponent in = new TextComponent("[selectEditorCommand]");
+        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , commandEdit));
         tc.addExtra(in);
-        tc.addExtra(", ");
-
-        in = new TextComponent("[eye]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND , command + " eye"));
-        tc.addExtra(in);
-        tc.addExtra(", ");
-
-
-        in = new TextComponent("X");
-        in.setColor(ChatColor.BLUE);
-        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getX() +"").create()));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[s]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " x "));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[a]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addx "));
-        tc.addExtra(in);
-        tc.addExtra(", ");
-
-        in = new TextComponent("Y");
-        in.setColor(ChatColor.BLUE);
-        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getY() +"").create()));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[s]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " y "));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[a]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addy "));
-        tc.addExtra(in);
-        tc.addExtra(", ");
-
-        in = new TextComponent("Z");
-        in.setColor(ChatColor.BLUE);
-        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new ComponentBuilder().append(getReference().getValue().getZ() +"").create()));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[s]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " z "));
-        tc.addExtra(in);
-        tc.addExtra("|");
-        in = new TextComponent("[a]");
-        in.setColor(ChatColor.GREEN);
-        in.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND , command + " addz "));
-        tc.addExtra(in);
-
         p.spigot().sendMessage(tc);
     }
 

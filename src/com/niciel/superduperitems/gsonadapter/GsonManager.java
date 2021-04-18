@@ -1,6 +1,7 @@
 package com.niciel.superduperitems.gsonadapter;
 
 import com.google.gson.*;
+import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.managers.IManager;
 import com.niciel.superduperitems.utils.RefCallBack;
 import com.sun.xml.internal.bind.v2.TODO;
@@ -79,6 +80,7 @@ public final class GsonManager implements IManager {
                 }
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
+                SDIPlugin.instance.logWarning(this,"class file not found: " + clazzName);
                 return null;
             }
             if (gsonAdapters.contains(clazzName))

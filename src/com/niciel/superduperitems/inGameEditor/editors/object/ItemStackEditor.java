@@ -42,9 +42,8 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
     @Override
     public void sendMenu() {
         Player p = getTreeRoot().getPlayer();
-        p.sendMessage("zmiana typu usunie wszystkie zmiany w przedmiocie dotyczace itemmeta !");
+        p.sendMessage("zmiana typu usunie wszystkie zmiany w przedmiocie dotyczace itemmeta ! poza lore i name");
         enumEditor.sendItem(p);
-        p.sendMessage("zmiana typu usunie wszystkie zmiany w przedmiocie dotyczace itemmeta !");
         if (is != null) {
             count.sendItem(p);
             displayName.sendItem(p);
@@ -68,6 +67,7 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
         displaynameCallBack.addCallBack(r-> {
             im.setDisplayName(r.getValue());
             is.setItemMeta(im);
+            getReference().setValue(is);
         });
         displayName.initialize(displaynameCallBack);
         displayName.enableEditor(menu);
@@ -76,6 +76,7 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
         RefCallBack<Integer> amountCallback = new RefCallBack<>(is.getAmount());
         amountCallback.addCallBack(r-> {
             is.setAmount(r.getValue());
+            getReference().setValue(is);
         });
         count.initialize(amountCallback);
         count.enableEditor(menu);
@@ -120,15 +121,20 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
     public void sendItem(Player p) {
         TextComponent tc;
         TextComponent in ;
-        tc = new TextComponent("type: " + is.getType().toString().toLowerCase() + " item: " );
+        tc = new TextComponent("ItemStack: ");
+        tc.setColor(ChatColor.GRAY);
+        in = new TextComponent(getName());
+        in.setColor(ChatColor.WHITE);
+        in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT  , new Text(getDescription())));
+        tc.addExtra(in);
 
         if (is != null) {
-            tc.addExtra(is.getType().toString().toLowerCase() + " item: ");
+            tc.addExtra(" type: " + is.getType().toString().toLowerCase() + "\"");
             if (im.hasDisplayName()) {
                 in = new TextComponent(im.getDisplayName());
             }
             else {
-                in = new TextComponent(is.getType().toString().toLowerCase());
+                in = new TextComponent("brak nazwy");
             }
             in.setColor(ChatColor.BLUE);
             if (im.hasLore()) {
@@ -137,9 +143,10 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
                 in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT , new Text(sb.toString())));
             }
             tc.addExtra(in);
+            tc.addExtra("\"");
         }
         else {
-            tc.addExtra("brak! ");
+            tc.addExtra("null");
         }
         tc.addExtra(",   ");
         in = new TextComponent("[edit]");

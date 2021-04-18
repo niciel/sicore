@@ -112,7 +112,7 @@ public  class EditorChatObject<T extends Object> extends ChatEditorMenu<T> imple
                         handle.invoke(ownerEditor.get().getReference().getValue() , ((Ref)c).getValue());
                         ownerEditor.get().getTreeRoot().sendMenu();
                         if (ownerEditor.get().isFieldCallBackEnabled) {
-                            ((IFieldUpdateCallBack) ownerEditor.get()).validate(fieldName);
+                            ((IFieldUpdateCallBack) ownerEditor.get().getReference().getValue()).validate(fieldName);
                         }
                     } catch (Throwable throwable) {
                         throwable.printStackTrace();
