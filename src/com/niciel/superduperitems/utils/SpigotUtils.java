@@ -1,7 +1,6 @@
 package com.niciel.superduperitems.utils;
 
 import com.niciel.superduperitems.SDIPlugin;
-import jdk.internal.dynalink.support.Lookup;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 

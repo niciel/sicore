@@ -112,6 +112,10 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
         displayName.disableEditor();
         count.disableEditor();
         enumEditor.disableEditor();
+        enumEditor = null;
+        displayName = null;
+        count = null;
+
     }
 
 
@@ -121,15 +125,15 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
     public void sendItem(Player p) {
         TextComponent tc;
         TextComponent in ;
-        tc = new TextComponent("ItemStack: ");
-        tc.setColor(ChatColor.GRAY);
+        tc = new TextComponent("ItemStack ");
+        tc.setColor(ChatColor.DARK_GRAY);
         in = new TextComponent(getName());
         in.setColor(ChatColor.WHITE);
         in.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT  , new Text(getDescription())));
         tc.addExtra(in);
 
         if (is != null) {
-            tc.addExtra(" type: " + is.getType().toString().toLowerCase() + "\"");
+            tc.addExtra(" type: \"" + is.getType().toString().toLowerCase() + "\"");
             if (im.hasDisplayName()) {
                 in = new TextComponent(im.getDisplayName());
             }
@@ -159,6 +163,11 @@ public class ItemStackEditor extends ChatEditorMenu<ItemStack> {
 
     @Override
     public void disableEditor() {
-
+        displayName.disableEditor();
+        count.disableEditor();
+        enumEditor.disableEditor();
+        enumEditor = null;
+        displayName = null;
+        count = null;
     }
 }

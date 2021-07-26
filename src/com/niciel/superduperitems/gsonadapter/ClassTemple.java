@@ -44,11 +44,9 @@ public class ClassTemple implements GsonSimpleSerializer {
             }
             if (! f.isAccessible())
                 f.setAccessible(true);
-
             path = annotation.name();
             if (path.isEmpty())
                 path = f.getName();
-
             temple = new FieldTemple();
             temple.path = path;
             if (f.getType().isPrimitive() || f.getType().getSimpleName().contentEquals(String.class.getSimpleName())){
@@ -58,6 +56,7 @@ public class ClassTemple implements GsonSimpleSerializer {
             else {
                 temple.isPrimitive = false;
             }
+            temple.fieldType = f.getType();
             if (f.getType().isEnum())
                 temple.enumType = f.getType();
 
@@ -113,21 +112,27 @@ public class ClassTemple implements GsonSimpleSerializer {
         JsonElement e ;
         for (FieldTemple t : fields) {
             if (! obj.has(t.path)) {
-                in = null;
+                if (t.isPrimitive)
+                    in = t.type.defaultPrimitive;
+                else
+                    in = null;
             }
-            e = obj.get(t.path);
-            if (e == null || e.isJsonNull()) {
-                in = null;
+            else {
+                e = obj.get(t.path);
+                if (e == null || e.isJsonNull()) {
+                    in = null;
+                }
+                else if (t.enumType != null) {
+                    in = Enum.valueOf(t.enumType,e.getAsString());
+                }
+                else if (e.isJsonObject()) {
+                    in = manager.fromJson(e.getAsJsonObject());
+                }
+                else if (t.isPrimitive) {
+                    in = t.type.deserializer.apply(e);
+                }
             }
-            else if (t.enumType != null) {
-                in = Enum.valueOf(t.enumType,e.getAsString());
-            }
-            else if (e.isJsonObject()) {
-                in = manager.fromJson(e.getAsJsonObject());
-            }
-            else if (t.isPrimitive) {
-                in = t.type.deserializer.apply(e);
-            }
+
 
             try {
                 t.setter.invoke(o , in);
@@ -138,7 +143,6 @@ public class ClassTemple implements GsonSimpleSerializer {
         if (o instanceof IAfterGsonDeserialize)
             ((IAfterGsonDeserialize) o).afterGsonSerialization(obj);
     }
-
 
     @Override
     public JsonElement serialize(Object o) {

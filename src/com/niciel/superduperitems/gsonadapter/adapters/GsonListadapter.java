@@ -1,6 +1,7 @@
 package com.niciel.superduperitems.gsonadapter.adapters;
 
 import com.google.gson.*;
+import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.gsonadapter.GsonManager;
 import com.niciel.superduperitems.gsonadapter.GsonSerializable;
 
@@ -15,10 +16,24 @@ public class GsonListadapter implements JsonSerializer<List> , JsonDeserializer<
 
     @Override
     public List deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+        if (jsonElement.isJsonArray() == false)
+            return new ArrayList();
         JsonArray array = jsonElement.getAsJsonArray();
         List list=  new ArrayList();
+        if (array == null) {
+            SDIPlugin.instance.logWarning(this , " deserializacja listy sie nie powiodla: " +jsonElement);
+            return null;
+        }
         array.forEach(c -> {
-            list.add(GsonManager.getInstance().fromJson(c.getAsJsonObject()));
+            if (c.isJsonNull()) {
+                return;
+            }
+            Object o = GsonManager.getInstance().fromJson(c.getAsJsonObject());
+            if (o != null)
+                list.add(o);
+            else {
+                SDIPlugin.instance.logWarning(this , " deserializacja elementu listy sie nie powiodla: " +c);
+            }
         });
         return list;
     }

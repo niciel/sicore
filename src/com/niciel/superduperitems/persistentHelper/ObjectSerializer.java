@@ -1,7 +1,7 @@
 package com.niciel.superduperitems.persistentHelper;
 
+import com.niciel.superduperitems.utils.Dual;
 import com.niciel.superduperitems.utils.Ref;
-import javafx.util.Pair;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.lang.invoke.MethodHandle;
@@ -25,7 +25,7 @@ public class ObjectSerializer<T> implements IPersistentSerialize<T> {
                 mag;
 
         fieldToSerializer = new ArrayList();
-        Pair p;
+        Dual p;
         PersistentData data;
         IPersistentSerialize ser;
         MethodHandles.Lookup lookup = MethodHandles.lookup();

@@ -2,9 +2,7 @@ package com.niciel.superduperitems.customitems.components.actions;
 
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.cfg.Cfg;
-import com.niciel.superduperitems.customitems.CustomItem;
-import jdk.nashorn.internal.ir.Block;
-import org.bukkit.entity.Player;
+
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;

@@ -1,9 +1,7 @@
 package com.niciel.superduperitems.inGameEditor;
 
-import com.niciel.superduperitems.fieldwrapper.*;
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import org.bukkit.util.Vector;
 
 import java.util.List;
 

@@ -1,11 +1,10 @@
-package com.niciel.superduperitems.fieldwrapper;
+package com.niciel.superduperitems.inGameEditor.fieldwrapper;
 
 import com.niciel.superduperitems.commandGui.IGuiTabCompliter;
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
 import com.niciel.superduperitems.inGameEditor.IObjectSelfEditable;
 import com.niciel.superduperitems.inGameEditor.editors.EditorChatString;
 import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
-import com.niciel.superduperitems.utils.Ref;
 import com.niciel.superduperitems.utils.RefCallBack;
 import org.bukkit.Bukkit;
 import org.bukkit.World;

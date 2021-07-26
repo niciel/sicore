@@ -1,7 +1,6 @@
 package com.niciel.superduperitems.customitems;
 
 import com.google.common.base.Function;
-import javafx.util.Pair;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 

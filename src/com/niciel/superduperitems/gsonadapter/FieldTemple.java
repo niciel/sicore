@@ -14,18 +14,18 @@ public class FieldTemple {
     PrimitiveWrapper type;
     MethodHandle getter;
     MethodHandle setter;
-
+    Class fieldType;
     Class enumType;
 
     public  enum PrimitiveWrapper {
-        INT((e) -> {
+        INT(0,(e) -> {
             return e.getAsInt();
         },
                 (o)-> {
                     return new JsonPrimitive((int) o);
                 }
                 ,Integer.class , int.class),
-        DOUBLE(
+        DOUBLE(0,
                 e-> {
                      return e.getAsDouble();
         },
@@ -33,20 +33,20 @@ public class FieldTemple {
                     return new JsonPrimitive((double) s);
                 },
                 Double.class, double.class),
-        BOOLEAN(    e-> {
+        BOOLEAN( false,   e-> {
             return e.getAsBoolean();
         },
                 s->{
                     return new JsonPrimitive((double) s);
                 },
                 Boolean.class, boolean.class),
-        STRING(     e-> {
+        STRING(null,     e-> {
             return e.getAsString();
         } ,
                 s-> {
             return new JsonPrimitive((String) s);
                 } , String.class),
-        NONE(null,null,new Class[]{});
+        NONE(null,null,null,new Class[]{});
 
 
 
@@ -54,7 +54,10 @@ public class FieldTemple {
         public final Function<JsonElement,Object> deserializer;
         public final Function<Object , JsonElement> serializer;
 
-        PrimitiveWrapper(Function<JsonElement, Object> deser , Function<Object , JsonElement> serializer ,Class... classes) {
+        public Object defaultPrimitive;
+
+        PrimitiveWrapper(Object primitive ,Function<JsonElement, Object> deser , Function<Object , JsonElement> serializer ,Class... classes) {
+            this.defaultPrimitive = primitive;
             types = new String[classes.length];
             for (int i = 0 ; i < classes.length ; i++) {
                 types[i] = classes[i].getName();

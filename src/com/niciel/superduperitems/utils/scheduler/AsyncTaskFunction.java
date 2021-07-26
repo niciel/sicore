@@ -1,6 +1,5 @@
 package com.niciel.superduperitems.utils.scheduler;
 
-import com.sun.corba.se.impl.orbutil.concurrent.Sync;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

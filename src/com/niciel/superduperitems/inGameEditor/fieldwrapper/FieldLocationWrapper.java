@@ -1,11 +1,8 @@
-package com.niciel.superduperitems.fieldwrapper;
+package com.niciel.superduperitems.inGameEditor.fieldwrapper;
 
 import com.niciel.superduperitems.gsonadapter.GsonSimpleSerialize;
-import com.niciel.superduperitems.inGameEditor.IObjectSelfEditable;
 import com.niciel.superduperitems.inGameEditor.annotations.ChatEditable;
-import com.niciel.superduperitems.inGameEditor.editors.object.EditorChatObject;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 public class FieldLocationWrapper  {

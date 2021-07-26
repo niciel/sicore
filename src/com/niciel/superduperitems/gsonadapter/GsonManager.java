@@ -4,7 +4,6 @@ import com.google.gson.*;
 import com.niciel.superduperitems.SDIPlugin;
 import com.niciel.superduperitems.managers.IManager;
 import com.niciel.superduperitems.utils.RefCallBack;
-import com.sun.xml.internal.bind.v2.TODO;
 
 import java.io.*;
 import java.util.HashMap;
@@ -22,8 +21,6 @@ public final class GsonManager implements IManager {
     private static GsonManager instance;
 
     public static final  String pathToClassName = "-=-type-=-";
-
-
 
     public GsonManager(GsonBuilder builder) {
         this.builder = builder;
@@ -66,6 +63,10 @@ public final class GsonManager implements IManager {
             return null;
         if (o.has(pathToClassName)) {
             String clazzName = o.get(pathToClassName).getAsString();
+            if (clazzName == null || clazzName.isEmpty()) {
+                SDIPlugin.instance.logWarning(this, "path to clazName null: " + o);
+                return null;
+            }
             GsonSimpleSerializer ser = getSerializer(clazzName);
             if (ser != null) {
                 RefCallBack ref = new RefCallBack();

@@ -2,9 +2,7 @@ package com.niciel.superduperitems.utils;
 
 
 import com.niciel.superduperitems.SDIPlugin;
-import javafx.scene.control.Tab;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
